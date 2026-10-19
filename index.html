@@ -322,7 +322,8 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "1032790978486",
   appId: "1:1032790978486:web:aea761d9cfb8fb0d6e9b17"
 };
-const ADMIN_UIDS = ["TyIwt6vNl8XPrSK6515fJOWXzdA3"];          // IDs de quienes ven la pestaña Equipo
+const APP_VER = "v1.2 · 18/10/2026";   // cámbiala cada vez que subas una versión nueva: se ve en el pie y confirma qué versión corre cada colaborador
+const ADMIN_UIDS = ["TyIwt6vNl8XPrSK6515fJOWXzdA3", "KYmI8axCUgOMmItj4cNyfiegLXn1"];          // IDs de quienes ven la pestaña Equipo
 
 /* ---------- utilidades ---------- */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -751,7 +752,7 @@ document.addEventListener('mouseleave',()=>{tip.hidden=true});
 function renderFoot(){
   const s=S.store;if(!s)return;let h='';
   const mode=s.kind==='claude'?'Datos en vivo compartidos':s.kind==='firebase'?'Datos en vivo con Firebase':'Modo demostración (solo este navegador)';
-  h+=`<span>${mode}</span>`;
+  h+=`<span>${mode}</span><span>Versión ${esc(APP_VER)}</span>`;
   if(s.kind==='firebase')h+=`<span>Sesión: ${esc(s.email||'')} · Tu ID: <code>${esc(s.uid)}</code> · <button class="linkish" id="btn-out" type="button">Cerrar sesión</button></span>`;
   if($('#foot').dataset.capped)h+='<span>Se muestran en vivo los primeros 56 colaboradores.</span>';
   $('#foot').innerHTML=h;const o=$('#btn-out');if(o)o.onclick=()=>s.signOut();
