@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Difeyro Servicios — Registro de Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #1A2B6B; --navy-dark: #111d4a; --navy-lite: #e8ebf5;
+    --orange: #E87722; --orange-lite: #fde9d3; --orange-dark: #c45f0a;
+    --white: #ffffff; --gray: #f4f5f8; --gray-mid: #dde1ec;
+    --text: #1e2235; --text-soft: #6b7294;
+    --green: #16a34a; --green-lite: #dcfce7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow', sans-serif; background: #f0f2f8; color: var(--text); min-height: 100vh; }
+
+  /* TOP BAR */
+  .topbar { background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(26,43,107,0.18); }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-logo { width: 40px; height: 40px; border-radius: 6px; background: var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; color: white; }
+  .topbar-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 20px; color: white; letter-spacing: 1px; }
+  .topbar-sub { font-size: 11px; color: #8fa0d4; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .4px; transition: all .18s; white-space: nowrap; }
+  .btn-orange { background: var(--orange); color: white; }
+  .btn-orange:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.3); }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+  .btn-navy { background: var(--navy); color: white; }
+  .btn-navy:hover { background: var(--navy-dark); }
+  .btn-ghost { background: var(--gray); color: var(--text); }
+  .btn-ghost:hover { background: var(--gray-mid); }
+  .btn-danger { background: #fee2e2; color: #b91c1c; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-green { background: var(--green-lite); color: var(--green); }
+  .btn-green:hover { background: #bbf7d0; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; background: white; padding: 5px; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); margin-bottom: 24px; }
+  .tab { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 7px; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; transition: all .18s; color: var(--text-soft); }
+  .tab.active { background: var(--navy); color: white; }
+  .tab:not(.active):hover { background: var(--navy-lite); color: var(--navy); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* FORM CARD */
+  .form-card { background: white; border-radius: 14px; box-shadow: 0 2px 16px rgba(26,43,107,0.08); overflow: hidden; }
+  .form-card-header { background: linear-gradient(135deg, var(--navy) 60%, #2a3f9e); padding: 20px 26px; display: flex; align-items: center; gap: 14px; }
+  .form-card-header .icon { font-size: 26px; }
+  .form-card-header h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 22px; color: white; }
+  .form-card-header p { font-size: 13px; color: #8fa0d4; margin-top: 2px; }
+  .form-body { padding: 26px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-full { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: .8px; }
+  .field input, .field textarea { border: 1.5px solid var(--gray-mid); border-radius: 8px; padding: 10px 14px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text); background: var(--gray); transition: border .18s, box-shadow .18s; resize: vertical; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--orange); background: white; box-shadow: 0 0 0 3px rgba(232,119,34,0.12); }
+  .field textarea { min-height: 76px; }
+  .field-hint { font-size: 12px; color: var(--text-soft); font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  /* SECTION DIVIDER */
+  .section-div { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; }
+  .section-div-line { flex: 1; height: 1px; background: var(--gray-mid); }
+  .section-div-label { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+  .section-div-accent { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+
+  /* DYNAMIC ITEMS */
+  .dyn-list { display: flex; flex-direction: column; gap: 10px; }
+  .dyn-item { background: var(--gray); border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--orange); display: grid; gap: 10px; }
+  .dyn-item.subcli-item { border-left-color: var(--navy); background: var(--navy-lite); }
+  .dyn-item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .dyn-item-actions { display: flex; justify-content: flex-end; margin-top: 2px; }
+  .btn-add { display: flex; align-items: center; gap: 8px; padding: 9px 16px; background: var(--orange-lite); color: var(--orange-dark); border: 1.5px dashed var(--orange); border-radius: 8px; cursor: pointer; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px; transition: all .18s; width: 100%; justify-content: center; margin-top: 8px; }
+  .btn-add:hover { background: var(--orange); color: white; border-style: solid; }
+  .btn-add.navy { background: var(--navy-lite); color: var(--navy); border-color: var(--navy); }
+  .btn-add.navy:hover { background: var(--navy); color: white; }
+
+  /* SUBCLI TOGGLE */
+  .subcli-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 10px 14px; background: var(--gray); border-radius: 8px; }
+  .subcli-toggle label { font-size: 13px; color: var(--text-soft); font-weight: 500; cursor: pointer; }
+  .toggle-check { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; flex-shrink: 0; }
+
+  /* CLIENTS LIST */
+  .clients-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .clients-header h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--navy); }
+  .badge { display: inline-flex; align-items: center; justify-content: center; background: var(--orange); color: white; border-radius: 20px; padding: 2px 10px; font-size: 13px; font-weight: 700; margin-left: 8px; }
+  .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .client-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(26,43,107,0.08); transition: transform .18s, box-shadow .18s; }
+  .client-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,43,107,0.14); }
+  .client-card-top { background: var(--navy); padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+  .client-avatar { width: 42px; height: 42px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; color: white; flex-shrink: 0; }
+  .client-card-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; color: white; }
+  .client-card-meta { font-size: 12px; color: #8fa0d4; margin-top: 2px; }
+  .client-card-body { padding: 14px 18px; }
+  .client-info-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 7px; font-size: 13px; color: var(--text-soft); }
+  .client-info-row strong { color: var(--text); min-width: 64px; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; flex-shrink: 0; }
+  .client-card-actions { padding: 10px 18px 14px; display: flex; gap: 7px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 60px 20px; }
+  .empty-icon { font-size: 52px; margin-bottom: 14px; opacity: .35; }
+  .empty-state h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; color: var(--text-soft); margin-bottom: 6px; }
+  .empty-state p { font-size: 14px; color: var(--text-soft); }
+
+  /* BACKUP BAR */
+  .backup-bar { background: white; border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 6px rgba(0,0,0,0.06); gap: 12px; flex-wrap: wrap; }
+  .backup-bar-text { font-size: 13px; color: var(--text-soft); }
+  .backup-bar-text strong { color: var(--text); font-size: 14px; }
+  .backup-bar-actions { display: flex; gap: 8px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,15,40,0.55); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 16px; max-width: 760px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(10,15,40,0.3); }
+  .modal-header { background: linear-gradient(135deg, var(--navy), #2a3f9e); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; border-radius: 16px 16px 0 0; }
+  .modal-header h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; }
+  .modal-close { background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .modal-close:hover { background: rgba(255,255,255,0.28); }
+  .modal-body { padding: 22px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-soft); margin-bottom: 8px; border-bottom: 2px solid var(--orange); padding-bottom: 4px; }
+  .detail-tag { display: inline-block; background: var(--navy-lite); color: var(--navy); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; margin: 3px; }
+  .detail-obs { background: #fff8f0; border-left: 3px solid var(--orange); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 14px; }
+  .req-box { background: var(--navy-lite); border-left: 3px solid var(--navy); padding: 10px 14px; border-radius: 0 8px 8px 0; }
+  .req-item { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; padding: 3px 0; }
+  .req-item::before { content: '☑'; color: var(--orange); font-weight: 700; flex-shrink: 0; }
+  .address-block { background: var(--gray); border-left: 3px solid var(--navy); padding: 12px 14px; border-radius: 0 8px 8px 0; margin-bottom: 8px; }
+  .address-block strong { font-size: 13px; color: var(--navy); display: block; margin-bottom: 4px; }
+  .address-block p { font-size: 13px; color: var(--text-soft); }
+  .contact-chip { display: flex; align-items: center; gap: 10px; background: var(--gray); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; }
+  .contact-chip-av { width: 34px; height: 34px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; flex-shrink: 0; }
+  .contact-chip-name { font-size: 13px; font-weight: 600; }
+  .contact-chip-role { font-size: 12px; color: var(--text-soft); }
+  .subcli-block { background: var(--navy-lite); border-left: 3px solid var(--navy); padding: 14px 16px; border-radius: 0 10px 10px 0; margin-bottom: 10px; }
+  .subcli-block-name { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .subcli-block p { font-size: 13px; color: var(--text-soft); margin-bottom: 4px; }
+  .subcli-na { background: #f0f0f0; color: #999; border-radius: 6px; padding: 6px 14px; font-size: 13px; display: inline-block; }
+  .bonif-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-mid); font-size: 13px; }
+  .bonif-row:last-child { border-bottom: none; }
+  .bonif-amount { font-weight: 700; color: var(--orange-dark); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy); color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 999; transform: translateY(80px); opacity: 0; transition: all .3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-left: 4px solid var(--orange); }
+  .toast.error { border-left: 4px solid #ef4444; }
+  #import-input { display: none; }
+
+  /* INSTRUCCIONES */
+  .help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+  .help-card { background: var(--gray); border-radius: 12px; border-top: 4px solid var(--orange); padding: 16px 18px; }
+  .help-card.navy { border-top-color: var(--navy); }
+  .help-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: white; font-weight: 700; font-size: 13px; }
+  .help-card.navy .help-num { background: var(--navy); }
+  .help-file { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy); margin: 8px 0 2px; word-break: break-word; }
+  .help-role { font-size: 12px; color: var(--text-soft); text-transform: uppercase; letter-spacing: .8px; font-weight: 600; margin-bottom: 6px; }
+  .help-card h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--navy); margin: 12px 0 4px; }
+  .help-card p, .help-card li, .help-yes li, .help-no li { font-size: 13px; line-height: 1.5; }
+  .help-card ul, .help-yes ul, .help-no ul { padding-left: 18px; }
+  .help-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; counter-reset: s; }
+  .help-steps li { counter-increment: s; display: flex; gap: 12px; align-items: flex-start; background: var(--gray); border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.45; }
+  .help-steps li::before { content: counter(s); flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: white; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+  .help-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .help-yes, .help-no { border-radius: 10px; padding: 12px 16px; }
+  .help-yes { background: var(--green-lite); }
+  .help-no { background: var(--orange-lite); }
+  .help-yes h4, .help-no h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+  .help-warn { background: #fff8f0; border-left: 3px solid var(--orange); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.5; }
+  .help-warn ul { padding-left: 18px; margin-top: 4px; }
+  .help-old { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .help-old th { background: var(--navy); color: white; text-align: left; padding: 8px 12px; font-size: 12px; }
+  .help-old td { padding: 8px 12px; border-bottom: 1px solid var(--gray-mid); }
+  @media (max-width: 640px) { .help-two { grid-template-columns: 1fr; } }
+
+  /* REQUISITOS DE DESCARGA */
+  .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .req-box.desc { background: var(--orange-lite); border-left-color: var(--orange); }
+  .req-box.desc .req-item::before { color: var(--navy); }
+
+  /* BUSCADOR */
+  .search-bar { background: white; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex: 1; min-width: 220px; }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: .55; pointer-events: none; }
+  .search-wrap input { width: 100%; border: 1.5px solid var(--gray-mid); border-radius: 8px; padding: 10px 38px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text); background: var(--gray); transition: border .18s, box-shadow .18s; }
+  .search-wrap input:focus { outline: none; border-color: var(--orange); background: white; box-shadow: 0 0 0 3px rgba(232,119,34,0.12); }
+  .search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: var(--gray-mid); color: var(--text-soft); width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; display: none; align-items: center; justify-content: center; }
+  .search-clear.show { display: flex; }
+  .search-clear:hover { background: var(--orange); color: white; }
+  .search-count { font-size: 13px; color: var(--text-soft); white-space: nowrap; }
+  .search-count strong { color: var(--text); }
+  .client-info-row.match-row { color: var(--orange-dark); }
+
+  /* GUIA: 3 columnas */
+  .help-two.help-three { grid-template-columns: repeat(3, 1fr); }
+  .help-yes.desc { background: var(--navy-lite); }
+  @media (max-width: 860px) { .help-two.help-three { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .req-grid { grid-template-columns: 1fr; } }
+
+  /* ===== v5: herramienta compartida ===== */
+  [hidden] { display: none !important; }
+  .search-count:empty { display: none; }
+  .topbar { min-height: 64px; height: auto; flex-wrap: wrap; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+  .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
+  .live { display: flex; align-items: center; gap: 6px; color: #8fa0d4; font-size: 12px; margin-right: 6px; white-space: nowrap; }
+  .live-dot { width: 9px; height: 9px; border-radius: 50%; background: #7d86ad; flex-shrink: 0; }
+  .live-dot.on { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.22); }
+  .live-dot.off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.22); }
+  .live-dot.demo { background: var(--orange); }
+  .user-chip { color: white; font-size: 13px; display: flex; align-items: center; margin-right: 6px; max-width: 280px; }
+  .user-chip > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .role-badge { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 8px; flex-shrink: 0; }
+  .role-badge.r-lector { background: #dde1ec; color: #1A2B6B; }
+  .role-badge.r-editor { background: var(--green-lite); color: var(--green); }
+  .role-badge.r-admin { background: var(--orange); color: white; }
+  .demo-banner { background: var(--orange-lite); border-left: 4px solid var(--orange); color: var(--orange-dark); padding: 10px 16px; border-radius: 0 8px 8px 0; margin-bottom: 18px; font-size: 13px; line-height: 1.45; }
+  .foot { text-align: center; color: var(--text-soft); font-size: 12px; padding: 6px 20px 30px; }
+  .meta-line { font-size: 12px; color: var(--text-soft); line-height: 1.5; }
+  .hist-list { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .hist-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 12px; background: var(--gray); border-radius: 8px; font-size: 13px; margin-bottom: 6px; }
+  .hist-list .hist-row { margin-bottom: 0; }
+  .acc-add { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: end; }
+  .acc-add textarea { min-height: 84px; }
+  .acc-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  .acc-table th { background: var(--navy); color: white; text-align: left; padding: 8px 12px; font-size: 12px; }
+  .acc-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray-mid); vertical-align: middle; }
+  .acc-table select { border: 1.5px solid var(--gray-mid); border-radius: 6px; padding: 5px 8px; font-family: 'Barlow', sans-serif; font-size: 13px; background: var(--gray); }
+  .acc-wrap { overflow-x: auto; }
+  .field select { border: 1.5px solid var(--gray-mid); border-radius: 8px; padding: 10px 14px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text); background: var(--gray); }
+  .help-roles { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .help-roles th { background: var(--navy); color: white; text-align: left; padding: 8px 12px; font-size: 12px; }
+  .help-roles td { padding: 8px 12px; border-bottom: 1px solid var(--gray-mid); vertical-align: top; }
+  .help-roles td:first-child { white-space: nowrap; font-weight: 600; }
+
+  /* PANTALLA DE ACCESO */
+  .auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; background: linear-gradient(160deg, var(--navy-dark), var(--navy) 55%, #2a3f9e); }
+  .auth-card { background: white; border-radius: 16px; width: 100%; max-width: 420px; padding: 30px 28px 22px; box-shadow: 0 24px 80px rgba(10,15,40,.4); text-align: center; }
+  .auth-logo { width: 54px; height: 54px; border-radius: 10px; background: var(--orange); color: white; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 24px; }
+  .auth-card h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; color: var(--navy); letter-spacing: .5px; }
+  .auth-card .auth-sub { font-size: 13px; color: var(--text-soft); margin: 4px 0 20px; line-height: 1.45; }
+  .auth-card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+  .auth-card p { font-size: 14px; color: var(--text-soft); line-height: 1.5; margin-bottom: 14px; }
+  .auth-card p strong { color: var(--text); word-break: break-all; }
+  .btn-google { width: 100%; justify-content: center; background: white; color: var(--text); border: 1.5px solid var(--gray-mid); padding: 11px 16px; font-size: 14px; }
+  .btn-google:hover { background: var(--gray); }
+  .btn-google .g { font-weight: 800; font-size: 16px; color: #4285F4; }
+  .auth-or { display: flex; align-items: center; gap: 10px; color: var(--text-soft); font-size: 12px; margin: 16px 0; text-transform: uppercase; letter-spacing: 1px; }
+  .auth-or::before, .auth-or::after { content: ''; flex: 1; height: 1px; background: var(--gray-mid); }
+  .auth-card .field { text-align: left; margin-bottom: 10px; }
+  .auth-card .btn { width: 100%; justify-content: center; padding: 11px 16px; font-size: 14px; }
+  .auth-card .btn-link { background: none; color: var(--text-soft); text-decoration: underline; font-weight: 500; padding: 8px; margin-top: 4px; }
+  .auth-error { background: #fee2e2; color: #b91c1c; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-top: 14px; text-align: left; line-height: 1.4; }
+  .auth-note { font-size: 12px; color: var(--text-soft); margin-top: 16px; line-height: 1.45; }
+  .auth-ver { font-size: 11px; color: #aab; margin-top: 14px; }
+  .spinner { width: 34px; height: 34px; border: 4px solid var(--gray-mid); border-top-color: var(--orange); border-radius: 50%; margin: 6px auto 14px; animation: spin .9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 700px) {
+    .topbar { padding-left: 14px; padding-right: 14px; }
+    .topbar-name { font-size: 17px; }
+    .main { padding: 18px 12px; }
+    .tab { font-size: 12px; padding: 9px 4px; }
+    .acc-add { grid-template-columns: 1fr; }
+    .form-grid, .dyn-item-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<noscript><div style="padding:24px;font-family:sans-serif">Esta herramienta necesita JavaScript activado.</div></noscript>
+
+<!-- ============ ACCESO ============ -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">DFR</div>
+    <h1>DIFEYRO SERVICIOS</h1>
+    <div class="auth-sub">Registro de Clientes · acceso solo para personal autorizado</div>
+
+    <div id="auth-check">
+      <div class="spinner"></div>
+      <p id="auth-check-text">Cargando…</p>
+      <p id="auth-check-slow" hidden style="font-size:12px">Está tardando más de lo normal. Revisa tu conexión a internet.</p>
+    </div>
+
+    <div id="auth-login" hidden>
+      <button class="btn btn-google" onclick="authGoogle()"><span class="g">G</span> Continuar con Google</button>
+      <div id="auth-emailblock">
+        <div class="auth-or">o con tu correo</div>
+        <div class="field">
+          <label for="auth-email">Correo</label>
+          <input type="email" id="auth-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" onkeydown="if(event.key==='Enter')authSendLink()"/>
+        </div>
+        <button class="btn btn-navy" onclick="authSendLink()">Enviarme un enlace de acceso</button>
+      </div>
+      <div class="auth-note">Entra con tu cuenta de Google (Gmail); la herramienta no tiene contraseña propia. Solo entran los correos que el administrador haya autorizado; si el tuyo no está en la lista, no verás ningún dato.</div>
+    </div>
+
+    <div id="auth-sent" hidden>
+      <h2>Revisa tu correo</h2>
+      <p>Te enviamos un enlace de acceso a <strong id="auth-sent-to"></strong>. Ábrelo en este mismo navegador para entrar.</p>
+      <p style="font-size:12px">Si no llega en un minuto, revisa Spam o Promociones.</p>
+      <button class="btn btn-link" onclick="showAuth('login')">Usar otro correo</button>
+    </div>
+
+    <div id="auth-confirm" hidden>
+      <h2>Confirma tu correo</h2>
+      <p>Abriste el enlace desde otro navegador o dispositivo. Escribe el mismo correo al que llegó el enlace.</p>
+      <div class="field">
+        <label for="auth-confirm-email">Correo</label>
+        <input type="email" id="auth-confirm-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" onkeydown="if(event.key==='Enter')authFinishLink()"/>
+      </div>
+      <button class="btn btn-navy" onclick="authFinishLink()">Entrar</button>
+    </div>
+
+    <div id="auth-denied" hidden>
+      <h2>Sin autorización</h2>
+      <p>El correo <strong id="auth-denied-email"></strong> no está autorizado para usar esta herramienta.</p>
+      <p style="font-size:13px">Pide al administrador que agregue <strong>exactamente ese correo</strong> en la pestaña <em>Usuarios</em>. <span id="auth-denied-tip">Si tienes otra cuenta de Google, cierra sesión y entra con ella.</span></p>
+      <button class="btn btn-navy" onclick="authSignOut()">Cerrar sesión</button>
+    </div>
+
+    <div class="auth-error" id="auth-error" hidden></div>
+    <div class="auth-ver" id="auth-ver"></div>
+  </div>
+</div>
+
+<!-- ============ APLICACIÓN ============ -->
+<div id="app" hidden>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">DFR</div>
+    <div>
+      <div class="topbar-name">DIFEYRO SERVICIOS</div>
+      <div class="topbar-sub">Registro de Clientes</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div class="live" title="Estado de la conexión"><span class="live-dot" id="live-dot"></span><span id="live-text">Conectando</span></div>
+    <div class="user-chip" id="user-chip"></div>
+    <button class="btn btn-outline" onclick="showTab('lista')">📋 Clientes</button>
+    <button class="btn btn-orange" id="btn-nuevo-top" onclick="showTab('nuevo')">＋ Nuevo Cliente</button>
+    <button class="btn btn-outline" id="btn-salir" onclick="authSignOut()">Salir</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="demo-banner" id="demo-banner" hidden></div>
+
+  <div class="tabs">
+    <button class="tab" id="tab-nuevo" onclick="showTab('nuevo')">➕ Registrar Cliente</button>
+    <button class="tab active" id="tab-lista" onclick="showTab('lista')">📋 Clientes Registrados</button>
+    <button class="tab" id="tab-usuarios" onclick="showTab('usuarios')" style="display:none">👥 Usuarios</button>
+    <button class="tab" id="tab-ayuda" onclick="showTab('ayuda')">📘 Instrucciones</button>
+  </div>
+
+  <!-- PANEL NUEVO -->
+  <div class="panel" id="panel-nuevo">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="icon">🏢</div>
+        <div>
+          <h2 id="form-title">Registro de Cliente</h2>
+          <p>Completa la información del cliente; al guardar, todo el equipo la ve al instante</p>
+        </div>
+      </div>
+      <div class="form-body">
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Datos Generales</div><div class="section-div-line"></div></div>
+        <div class="form-grid">
+          <div class="field form-full">
+            <label>Nombre del Cliente *</label>
+            <input type="text" id="f-nombre" placeholder="Ej. LALA, Costco, Grupo Bimbo..."/>
+          </div>
+          <div class="field">
+            <label>Tipo de Carga / Producto</label>
+            <input type="text" id="f-carga" placeholder="Ej. Caja seca, Plataforma..."/>
+          </div>
+          <div class="field">
+            <label>Horario de Atención</label>
+            <input type="text" id="f-horario" placeholder="Ej. Lun–Vie 7:00–17:00"/>
+          </div>
+        </div>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Requisitos de Carga y Descarga</div><div class="section-div-line"></div></div>
+        <div class="req-grid">
+          <div class="field">
+            <label>Requisitos de Carga <span class="field-hint">(uno por línea)</span></label>
+            <textarea id="f-req" placeholder="Ej.&#10;Certificado de fumigación&#10;2 gatas y sello por caja&#10;Datos de unidad y operador un día antes"></textarea>
+          </div>
+          <div class="field">
+            <label>Requisitos de Descarga <span class="field-hint">(uno por línea)</span></label>
+            <textarea id="f-reqd" placeholder="Ej.&#10;Estar a las 8:30 AM en la descarga&#10;Coordinar cita antes de mandar la unidad&#10;Dejar documentos y llaves"></textarea>
+          </div>
+        </div>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Direcciones de Entrega</div><div class="section-div-line"></div></div>
+        <div class="dyn-list" id="list-dirs"></div>
+        <button class="btn-add" onclick="addDir()">＋ Agregar Dirección</button>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Contactos</div><div class="section-div-line"></div></div>
+        <div class="dyn-list" id="list-contacts"></div>
+        <button class="btn-add" onclick="addContact()">＋ Agregar Contacto</button>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Subclientes</div><div class="section-div-line"></div></div>
+        <div class="subcli-toggle">
+          <input type="checkbox" class="toggle-check" id="f-subcli-na" onchange="toggleSubcli(this)"/>
+          <label for="f-subcli-na">Este cliente <strong>no maneja subclientes</strong> (marcar si No Aplica)</label>
+        </div>
+        <div id="subcli-section">
+          <div class="dyn-list" id="list-subcli"></div>
+          <button class="btn-add navy" onclick="addSubcli()">＋ Agregar Subcliente</button>
+        </div>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Bonificaciones por Carga / Descarga</div><div class="section-div-line"></div></div>
+        <div class="dyn-list" id="list-bonif"></div>
+        <button class="btn-add" onclick="addBonif()">＋ Agregar Bonificación</button>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Observaciones Especiales</div><div class="section-div-line"></div></div>
+        <div class="field">
+          <label>Observaciones</label>
+          <textarea id="f-obs" placeholder="Indicaciones especiales, restricciones de acceso, requisitos de seguridad..."></textarea>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:26px;justify-content:flex-end;">
+          <button class="btn btn-ghost" onclick="resetForm()">Limpiar</button>
+          <button class="btn btn-orange" id="btn-save" onclick="saveClient()" style="padding:11px 32px;font-size:15px;">💾 Guardar Cliente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL LISTA -->
+  <div class="panel active" id="panel-lista">
+    <div class="backup-bar" id="backup-bar" style="display:none">
+      <div class="backup-bar-text">
+        <strong>💾 Respaldo de datos</strong><br/>
+        Solo administradores · descarga una copia de todos los clientes o carga datos desde un archivo
+      </div>
+      <div class="backup-bar-actions">
+        <button class="btn btn-green btn-sm" onclick="exportData()">⬇ Exportar datos</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-input').click()">⬆ Importar datos</button>
+        <input type="file" id="import-input" accept=".json" onchange="importData(event)"/>
+      </div>
+    </div>
+    <div class="clients-header">
+      <h2>Clientes Registrados <span class="badge" id="count-badge">0</span></h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="btn-trash" onclick="showTrash()" style="display:none">🗑 Papelera (<span id="trash-n">0</span>)</button>
+        <button class="btn btn-orange" onclick="generateManual()" id="btn-manual" style="display:none">📄 Generar Manual</button>
+      </div>
+    </div>
+    <div class="search-bar" id="search-bar" style="display:none">
+      <div class="search-wrap">
+        <span class="search-icon">🔎</span>
+        <input type="text" id="search-input" placeholder="Buscar por cliente, contacto, dirección, requisito..." autocomplete="off" oninput="renderClients()" onkeydown="if(event.key==='Escape')clearSearch()"/>
+        <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button>
+      </div>
+      <div class="search-count" id="search-count"></div>
+    </div>
+    <div id="clients-container">
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>Cargando clientes…</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL USUARIOS (solo administradores) -->
+  <div class="panel" id="panel-usuarios">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="icon">👥</div>
+        <div>
+          <h2>Usuarios con acceso <span class="badge" id="acc-count">0</span></h2>
+          <p>Solo los correos de esta lista pueden entrar y ver los datos de clientes</p>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Dar acceso</div><div class="section-div-line"></div></div>
+        <div class="acc-add">
+          <div class="field">
+            <label>Correos <span class="field-hint">(uno por línea, o separados por coma)</span></label>
+            <textarea id="acc-emails" placeholder="nombre@gmail.com&#10;otro@gmail.com"></textarea>
+          </div>
+          <div class="field">
+            <label>Permiso</label>
+            <select id="acc-rol">
+              <option value="lector">Consulta (solo ver)</option>
+              <option value="editor" selected>Captura (ver y editar)</option>
+              <option value="admin">Administrador</option>
+            </select>
+            <button class="btn btn-orange" onclick="addAccess()" style="margin-top:6px;justify-content:center">Dar acceso</button>
+          </div>
+        </div>
+        <p class="meta-line" style="margin-top:10px">Cada persona entra con su cuenta de Google usando ese mismo correo. Escríbelo tal como aparece en su cuenta (los puntos de Gmail cuentan). Si alguien entra con otro correo, verá "Sin autorización" con el correo exacto que debes agregar.<span id="dom-hint"></span></p>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Lista actual</div><div class="section-div-line"></div></div>
+        <div class="acc-wrap" id="acc-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL INSTRUCCIONES -->
+  <div class="panel" id="panel-ayuda">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="icon">📘</div>
+        <div>
+          <h2>Instrucciones de trabajo</h2>
+          <p>Cómo se usa la herramienta compartida de DFR</p>
+        </div>
+      </div>
+      <div class="form-body">
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Qué usas y para qué</div><div class="section-div-line"></div></div>
+        <div class="help-grid">
+
+          <div class="help-card">
+            <span class="help-num">1</span>
+            <div class="help-file">Esta herramienta (el enlace compartido)</div>
+            <div class="help-role">Captura y consulta · en línea, para todo el equipo</div>
+            <h4>Para qué sirve</h4>
+            <p>Consultar y actualizar los clientes desde cualquier equipo. Todos ven los mismos datos, en tiempo real.</p>
+            <h4>Cuándo la usas</h4>
+            <p>Cuando necesites consultar un cliente, o cuando cambie un contacto, horario, bonificación o requisito de carga o descarga.</p>
+            <h4>Cómo</h4>
+            <ul>
+              <li>Abre el enlace e inicia sesión con tu cuenta de Google (Gmail). La herramienta no tiene contraseña propia.</li>
+              <li>En "Clientes Registrados" usa la barra de búsqueda para encontrar un cliente, contacto, dirección o requisito.</li>
+              <li>Edita, guarda, y el cambio lo ve todo el equipo al instante.</li>
+            </ul>
+            <h4>No hagas</h4>
+            <p>Capturar con el indicador en rojo ("Sin conexión"): la herramienta necesita internet y ese cambio no se guardaría.</p>
+          </div>
+
+          <div class="help-card navy">
+            <span class="help-num">2</span>
+            <div class="help-file">DIFEYRO_Clientes_AAAA-MM-DD.json</div>
+            <div class="help-role">Respaldo · ya no es la base de trabajo</div>
+            <h4>Para qué sirve</h4>
+            <p>Copia de seguridad de todos los clientes y carga inicial de datos.</p>
+            <h4>Cuándo lo usas</h4>
+            <p>Solo administradores: una vez al inicio (carga inicial) y un respaldo cada mes o antes de cambios grandes.</p>
+            <h4>Cómo</h4>
+            <ul>
+              <li>"Exportar datos" genera el archivo con la fecha del día; guárdalo en Drive.</li>
+              <li>"Importar datos" agrega los clientes nuevos y actualiza los que ya existen (por identificador). No borra a los demás.</li>
+            </ul>
+            <h4>No hagas</h4>
+            <p>Importar un archivo viejo: sobrescribe los clientes que coincidan. El historial conserva la versión anterior, pero revisa antes de confirmar.</p>
+          </div>
+
+          <div class="help-card">
+            <span class="help-num">3</span>
+            <div class="help-file">DIFEYRO_Manual_Clientes.html</div>
+            <div class="help-role">Entregable final · se genera, no se edita</div>
+            <h4>Para qué sirve</h4>
+            <p>Manual de operación con una página por cliente: requisitos de carga y descarga, contactos, subclientes, bonificaciones y observaciones.</p>
+            <h4>Cuándo lo usas</h4>
+            <p>Cuando operación necesite el documento. Se vuelve a generar cada vez que se actualicen datos.</p>
+            <h4>Cómo</h4>
+            <ul>
+              <li>En "Clientes Registrados" pulsa "Generar Manual"; se descarga con los datos del momento.</li>
+              <li>Trae su propia barra de búsqueda arriba para filtrar clientes; al imprimir salen todos.</li>
+              <li>Para PDF: Imprimir → Guardar como PDF.</li>
+            </ul>
+            <h4>No hagas</h4>
+            <p>Editarlo a mano: se pierde al regenerarlo. Es confidencial (incluye bonificaciones y teléfonos); no lo compartas fuera de DFR.</p>
+          </div>
+
+        </div>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Permisos</div><div class="section-div-line"></div></div>
+        <table class="help-roles">
+          <tr><th>Permiso</th><th>Qué puede hacer</th></tr>
+          <tr><td>Consulta</td><td>Ver y buscar clientes, ver el historial de cambios y generar el manual.</td></tr>
+          <tr><td>Captura</td><td>Todo lo anterior, más registrar clientes nuevos y editar los existentes.</td></tr>
+          <tr><td>Administrador</td><td>Todo lo anterior, más enviar clientes a la Papelera y restaurarlos, cargar una versión anterior del historial, exportar/importar respaldos y dar o quitar accesos en la pestaña Usuarios.</td></tr>
+        </table>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Flujo de trabajo</div><div class="section-div-line"></div></div>
+        <ol class="help-steps">
+          <li><span>Abre el enlace de la herramienta y entra con tu cuenta de Google (el correo que el administrador autorizó).</span></li>
+          <li><span>En "Clientes Registrados" busca el cliente con la <strong>barra de búsqueda</strong>.</span></li>
+          <li><span>Pulsa <strong>Editar</strong> (o "Registrar Cliente" si es nuevo) y captura sus <strong>Requisitos de Carga y Descarga</strong>, contactos y demás datos.</span></li>
+          <li><span>Pulsa <strong>Guardar Cliente</strong>. El cambio queda registrado con tu correo y fecha, y el equipo lo ve al instante.</span></li>
+          <li><span>Cuando operación necesite el documento, pulsa <strong>Generar Manual</strong> y guárdalo como PDF.</span></li>
+          <li><span>Administradores: <strong>Exportar datos</strong> una vez al mes y guardar el JSON en Drive.</span></li>
+        </ol>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Qué va en Carga, en Descarga y en Observaciones</div><div class="section-div-line"></div></div>
+        <div class="help-two help-three">
+          <div class="help-yes">
+            <h4>Requisitos de Carga</h4>
+            <ul>
+              <li>Documentos a llevar: fumigación, TC, licencia, formatos.</li>
+              <li>Equipo: gatas, bandas, sellos.</li>
+              <li>Tipo de caja y límites de peso.</li>
+              <li>Datos que se mandan antes: unidad, placas, operador, folio.</li>
+              <li>Horario de presentación a carga.</li>
+              <li>Operadores vetados.</li>
+            </ul>
+          </div>
+          <div class="help-yes desc">
+            <h4>Requisitos de Descarga</h4>
+            <ul>
+              <li>Horario o cita de presentación en descarga.</li>
+              <li>Aviso o coordinación previa con el cliente o su contacto.</li>
+              <li>Tipo de descarga: en vivo, operador directo, operador de base.</li>
+              <li>Documentos o llaves que se dejan.</li>
+              <li>Reporte de status de la descarga al grupo del cliente.</li>
+            </ul>
+          </div>
+          <div class="help-no">
+            <h4>Se queda en Observaciones</h4>
+            <ul>
+              <li>Tarifas y bonificaciones.</li>
+              <li>Contactos de apoyo.</li>
+              <li>Contexto o historia del cliente.</li>
+              <li>Devoluciones e incidentes.</li>
+              <li>Cualquier regla que no sea de carga ni de descarga.</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size:13px;margin-top:10px;color:var(--text-soft)">Un requisito por línea, redactado como acción (ej. "Llevar dos gatas y sello por caja" o "Estar a las 8:30 AM en la descarga"). Si aplica solo a un subcliente, empieza con su nombre (ej. "Plastibell: ...").</p>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Reglas para no perder información</div><div class="section-div-line"></div></div>
+        <div class="help-warn">
+          <ul>
+            <li><strong>Un solo lugar de trabajo:</strong> esta herramienta en línea. No captures en copias locales ni en versiones anteriores.</li>
+            <li><strong>Si dos personas editan al mismo tiempo,</strong> al guardar la segunda recibe un aviso. Copia tu texto, carga la versión nueva y vuelve a aplicar tu cambio.</li>
+            <li><strong>Nada se pierde por borrar:</strong> un cliente eliminado va a la Papelera (solo administradores) y se puede restaurar.</li>
+            <li><strong>Cada guardado queda en el historial</strong> del cliente (quién y cuándo). Un administrador puede cargar una versión anterior desde "Ver historial".</li>
+            <li><strong>Respaldo mensual:</strong> un administrador exporta el JSON y lo guarda en Drive.</li>
+            <li><strong>Cada quien con su correo:</strong> no compartas tu sesión; los cambios se registran a nombre de quien los hace. Conviene activar la verificación en dos pasos en tu cuenta de Google.</li>
+            <li><strong>Bajas:</strong> cuando alguien deje de colaborar, el administrador lo quita en Usuarios y pierde el acceso al instante.</li>
+          </ul>
+        </div>
+
+        <div class="section-div"><div class="section-div-accent"></div><div class="section-div-label">Archivos anteriores: ya no los uses</div><div class="section-div-line"></div></div>
+        <table class="help-old">
+          <tr><th>Archivo</th><th>Por qué se retira</th></tr>
+          <tr><td>BASE DATOS REGISTRO.html, v2, v3 y v4</td><td>Guardan los datos solo en el navegador de quien los abre, así que cada quien tendría su propia versión. Además, las anteriores a esta no tenían el campo <strong>Origen</strong> del subcliente: al editar ahí un cliente con subclientes, ese dato se perdía.</td></tr>
+          <tr><td>DIFEYRO_Clientes_2026-03-11.json</td><td>Hay dos con esa fecha: uno de prueba con un solo cliente vacío y otro con los 19 clientes sin requisitos. Ambos sustituidos por el JSON más reciente.</td></tr>
+          <tr><td>DIFEYRO MANUAL CLIENTES.html</td><td>Manual del 11 de marzo; desactualizado. Genera uno nuevo.</td></tr>
+        </table>
+        <p style="font-size:13px;margin-top:8px;color:var(--text-soft)">Guárdalos como respaldo histórico, pero no los edites ni los importes.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Registro de Clientes · <span id="app-ver"></span> · Sesión: <span id="foot-email"></span></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Detalle</h3>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   REGISTRO DE CLIENTES · DFR  — versión compartida (Firebase)
+   Acceso sin contraseña (Google o enlace por correo) y solo para correos autorizados.
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBsvFaBme1jPpkPYLta8xEr2uOk63M5MYg",
+  authDomain: "clientes-dfr.firebaseapp.com",
+  projectId: "clientes-dfr",
+  storageBucket: "clientes-dfr.firebasestorage.app",
+  messagingSenderId: "744634250370",
+  appId: "1:744634250370:web:1a1c3e2783e5fa392df09b"
+};   // ← pega aquí el bloque de tu proyecto Firebase. Con null: modo demo local
+const DOMINIO = '';             // opcional: dominio de la empresa (ej. 'difeyro.com'). Con valor: en Usuarios completa "juan.perez" -> juan.perez@dominio y avisa si agregas un correo de otro dominio
+const EMAIL_LINK = false;       // true = ofrecer también el acceso por enlace de correo (exige plan Blaze de Firebase: el gratuito solo permite 5 correos al día)
+const APP_VER = 'v5.0 · 29/10/2026';
+const SDK_VER = '10.12.2';
+const LS_KEY = 'difeyro_clients';            // modo demo local (misma llave que la v4)
+const LS_HIST = 'difeyro_clients_hist';
+const LS_MAIL = 'dfr_clientes_email';        // correo al que se envió el enlace de acceso
+const DEMO_REASON = !FIREBASE_CONFIG
+  ? 'Modo demo local: los datos se guardan solo en este navegador. Falta pegar la configuración de Firebase para compartir con el equipo.'
+  : (location.protocol === 'file:' || /[?&]demo\b/.test(location.search)
+      ? 'Abierto como archivo (modo demo local): los datos se guardan solo en este navegador. Para trabajar con el equipo usa el enlace publicado.'
+      : '');
+const DEMO = !!DEMO_REASON;
+
+const $ = id => document.getElementById(id);
+const ROL_LABEL = { lector: 'Consulta', editor: 'Captura', admin: 'Administrador' };
+
+let store = null;
+let me = { email: '', nombre: '', rol: '', demo: false };
+let clients = [], trash = [], accessList = [];
+let editingId = null, editingRev = 0;
+let dirCount = 0, contactCount = 0, subcliCount = 0, bonifCount = 0;
+let subsData = [], subAccess = null, subAdmin = null, dataStarted = false, bootTried = false, finishingLink = false, slowTimer = null;
+
+const canEdit = () => me.rol === 'editor' || me.rol === 'admin';
+const isAdmin = () => me.rol === 'admin';
+
+/* ---------------- utilidades ---------------- */
+function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;'); }
+function v(id) { const el = $(id); return ((el && el.value) || '').trim(); }
+function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function cleanId(s) { return String(s == null ? '' : s).replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 60); }
+const mkErr = (code, msg) => Object.assign(new Error(msg || code), { code });
+const byName = (a, b) => String(a.nombre).localeCompare(String(b.nombre), 'es', { sensitivity: 'base' });
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar ' + src)); document.head.appendChild(s); });
+function fmtFecha(ms) { return ms ? new Date(ms).toLocaleString('es-MX', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''; }
+const validEmail = e => /^[A-Za-z0-9._%+'-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(e) && e.length <= 254;
+
+// Requisitos (carga o descarga): un requisito por línea; tolera viñetas (-, •, *) y clientes sin el campo
+// key: 'reqCarga' (por defecto) o 'reqDescarga'
+function reqList(c, key) {
+  return String((c && c[key || 'reqCarga']) || '').split('\n')
+    .map(s => s.replace(/^\s*[-•*]\s*/, '').trim())
+    .filter(Boolean);
+}
+
+// Limpia/normaliza un cliente (importación y lectura): garantiza tipos y campos conocidos
+function cleanClient(c, keepId) {
+  const arr = x => Array.isArray(x) ? x : [];
+  const str = x => x == null ? '' : String(x);
+  return {
+    id: keepId ? String(c.id) : cleanId(c.id || newId()),
+    nombre: str(c.nombre).trim(), carga: str(c.carga), horario: str(c.horario),
+    reqCarga: str(c.reqCarga), reqDescarga: str(c.reqDescarga),
+    dirs: arr(c.dirs).map(d => ({ ref: str(d.ref), addr: str(d.addr) })),
+    contacts: arr(c.contacts).map(x => ({ name: str(x.name), role: str(x.role), tel: str(x.tel), punto: str(x.punto) })),
+    subcli: c.subcli === 'NA' ? 'NA' : arr(c.subcli).map(s => ({ nombre: str(s.nombre), dir: str(s.dir), origen: str(s.origen), horario: str(s.horario), contacto: str(s.contacto), tel: str(s.tel), bonif: str(s.bonif), obs: str(s.obs) })),
+    bonif: arr(c.bonif).map(b => ({ concepto: str(b.concepto), monto: str(b.monto), obs: str(b.obs) })),
+    obs: str(c.obs)
+  };
+}
+// Lo que llega del almacenamiento: campos del cliente + metadatos de control
+function fromStore(x) {
+  const c = cleanClient(x, true);
+  c.rev = Number(x.rev) || 0; c.eliminado = !!x.eliminado;
+  c.updatedAt = Number(x.updatedAt) || 0; c.updatedBy = String(x.updatedBy || '');
+  c.createdAt = Number(x.createdAt) || 0; c.createdBy = String(x.createdBy || '');
+  c.eliminadoAt = Number(x.eliminadoAt) || 0; c.eliminadoPor = String(x.eliminadoPor || '');
+  return c;
+}
+
+/* =====================================================================
+   ALMACENAMIENTO — dos adaptadores con la misma interfaz
+   ===================================================================== */
+// ---- Demo local (localStorage del navegador) ----
+function LocalStore() {
+  const load = () => { try { const a = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); return Array.isArray(a) ? a : (a && a.clientes) || []; } catch (e) { return []; } };
+  const save = a => localStorage.setItem(LS_KEY, JSON.stringify(a));
+  const loadH = () => { try { return JSON.parse(localStorage.getItem(LS_HIST) || '{}') || {}; } catch (e) { return {}; } };
+  const addHist = (id, action, rev, snapshot, by) => { const h = loadH(); h[id] = [{ at: Date.now(), by, action, rev, snapshot }].concat(h[id] || []).slice(0, 30); localStorage.setItem(LS_HIST, JSON.stringify(h)); };
+  const listeners = [];
+  const emit = () => listeners.forEach(f => f(load().map(x => Object.assign({}, x))));
+  return {
+    kind: 'local',
+    user: () => ({ email: 'demo@local', nombre: 'Demo local', rol: 'admin' }),
+    watchClients(cb) { listeners.push(cb); cb(load()); return () => { const i = listeners.indexOf(cb); if (i >= 0) listeners.splice(i, 1); }; },
+    async saveClient(c, o, by) {
+      const a = load(), i = a.findIndex(x => x.id === c.id);
+      if (o.isNew && i >= 0) throw mkErr('conflict');
+      if (!o.isNew) { if (i < 0 || a[i].eliminado) throw mkErr('deleted'); if ((a[i].rev || 0) !== o.expectedRev) throw mkErr('conflict'); }
+      const rev = (o.isNew ? 0 : o.expectedRev) + 1, old = i >= 0 ? a[i] : null;
+      const rec = Object.assign({}, c, { rev, eliminado: false, updatedBy: by, updatedAt: Date.now(), createdBy: (old && old.createdBy) || by, createdAt: (old && old.createdAt) || Date.now() });
+      if (i >= 0) a[i] = rec; else a.push(rec);
+      save(a); addHist(c.id, o.isNew ? 'crear' : 'editar', rev, c, by); emit();
+    },
+    async softDelete(c, by) {
+      const a = load(), i = a.findIndex(x => x.id === c.id); if (i < 0) return;
+      a[i] = Object.assign({}, a[i], { eliminado: true, eliminadoPor: by, eliminadoAt: Date.now(), rev: (a[i].rev || 0) + 1 });
+      save(a); addHist(c.id, 'eliminar', a[i].rev, cleanClient(c, true), by); emit();
+    },
+    async restore(c, by) {
+      const a = load(), i = a.findIndex(x => x.id === c.id); if (i < 0) return;
+      a[i] = Object.assign({}, a[i], { eliminado: false, rev: (a[i].rev || 0) + 1, updatedBy: by, updatedAt: Date.now() });
+      save(a); addHist(c.id, 'restaurar', a[i].rev, cleanClient(c, true), by); emit();
+    },
+    async history(id) { return loadH()[id] || []; },
+    async importMany(list, by) {
+      const a = load();
+      list.forEach(c => {
+        const i = a.findIndex(x => x.id === c.id);
+        const rec = Object.assign({}, i >= 0 ? a[i] : {}, c, { eliminado: false, rev: (i >= 0 ? (a[i].rev || 0) : 0) + 1, updatedBy: by, updatedAt: Date.now() });
+        if (i >= 0) a[i] = rec; else a.push(rec);
+        addHist(c.id, 'importar', rec.rev, c, by);
+      });
+      save(a); emit();
+    }
+  };
+}
+
+// ---- Firebase (Firestore + Authentication, SDK "compat") ----
+const FirebaseStore = {
+  async create(cfg) {
+    if (!window.firebase) { for (const f of ['app', 'auth', 'firestore']) await loadScript('https://www.gstatic.com/firebasejs/' + SDK_VER + '/firebase-' + f + '-compat.js'); }
+    firebase.initializeApp(cfg);
+    const auth = firebase.auth(), db = firebase.firestore();
+    const FV = firebase.firestore.FieldValue, TS = () => FV.serverTimestamp();
+    const ms = t => (t && typeof t.toMillis === 'function') ? t.toMillis() : (typeof t === 'number' ? t : 0);
+    const ref = id => db.collection('clientes').doc(id);
+    const fromDoc = d => { const x = d.data(); return Object.assign({}, x, { id: d.id, updatedAt: ms(x.updatedAt), createdAt: ms(x.createdAt), eliminadoAt: ms(x.eliminadoAt) }); };
+    const histRef = id => ref(id).collection('historial').doc();
+    return {
+      kind: 'firebase',
+      // acceso
+      onAuth: cb => auth.onAuthStateChanged(cb),
+      signInGoogle: () => { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' }); return auth.signInWithPopup(p); },
+      sendLink: email => auth.sendSignInLinkToEmail(email, { url: location.href.split('#')[0].split('?')[0], handleCodeInApp: true }),
+      isLink: () => auth.isSignInWithEmailLink(location.href),
+      finishLink: email => auth.signInWithEmailLink(email, location.href),
+      signOut: () => auth.signOut(),
+      // Solo cuenta lo que confirma el servidor: ignora la copia local de una escritura pendiente (si Firestore la rechaza, no hay "flash" de acceso)
+      watchAccess: (email, cb, er) => db.collection('accesoClientes').doc(email).onSnapshot({ includeMetadataChanges: true }, s => {
+        if (s.metadata.hasPendingWrites) return;
+        if (!s.exists && s.metadata.fromCache) return;
+        cb(s.exists ? s.data() : null);
+      }, er),
+      // Solo prospera si el correo es administrador inicial en las reglas; para los demás Firestore lo rechaza y no pasa nada
+      bootstrapAdmin: (email, nombre) => db.collection('accesoClientes').doc(email).set({ rol: 'admin', nombre: nombre || '', agregadoPor: email, agregadoEn: TS() }),
+      watchAccessList: (cb, er) => db.collection('accesoClientes').onSnapshot(q => cb(q.docs.map(d => Object.assign({ email: d.id }, d.data()))), er),
+      setAccess: (email, rol, nombre, by) => db.collection('accesoClientes').doc(email).set({ rol, nombre: nombre || '', agregadoPor: by, agregadoEn: TS() }),
+      removeAccess: email => db.collection('accesoClientes').doc(email).delete(),
+      // clientes
+      watchClients: (cb, er) => db.collection('clientes').onSnapshot(q => cb(q.docs.map(fromDoc)), er),
+      async saveClient(c, o, by) {
+        const r = ref(c.id);
+        await db.runTransaction(async tx => {
+          const s = await tx.get(r);
+          let cur = null;
+          if (o.isNew) { if (s.exists) throw mkErr('conflict'); }
+          else {
+            if (!s.exists) throw mkErr('deleted');
+            cur = s.data();
+            if (cur.eliminado) throw mkErr('deleted');
+            if ((cur.rev || 0) !== o.expectedRev) throw mkErr('conflict');
+          }
+          const rev = (cur ? (cur.rev || 0) : 0) + 1;
+          tx.set(r, Object.assign({}, c, { rev, eliminado: false, updatedAt: TS(), updatedBy: by, createdAt: (cur && cur.createdAt) || TS(), createdBy: (cur && cur.createdBy) || by }));
+          tx.set(histRef(c.id), { at: TS(), by, action: o.isNew ? 'crear' : 'editar', rev, snapshot: c });
+        });
+      },
+      async softDelete(c, by) {
+        const b = db.batch();
+        b.update(ref(c.id), { eliminado: true, eliminadoPor: by, eliminadoAt: TS(), rev: FV.increment(1) });
+        b.set(histRef(c.id), { at: TS(), by, action: 'eliminar', rev: (c.rev || 0) + 1, snapshot: cleanClient(c, true) });
+        await b.commit();
+      },
+      async restore(c, by) {
+        const b = db.batch();
+        b.update(ref(c.id), { eliminado: false, rev: FV.increment(1), updatedAt: TS(), updatedBy: by });
+        b.set(histRef(c.id), { at: TS(), by, action: 'restaurar', rev: (c.rev || 0) + 1, snapshot: cleanClient(c, true) });
+        await b.commit();
+      },
+      async history(id) {
+        const q = await ref(id).collection('historial').orderBy('at', 'desc').limit(15).get();
+        return q.docs.map(d => { const x = d.data(); return { id: d.id, at: ms(x.at), by: x.by, action: x.action, rev: x.rev, snapshot: x.snapshot }; });
+      },
+      async importMany(list, by) {
+        // Lotes de 4 clientes (8 escrituras): las reglas consultan el rol de quien escribe y Firestore limita a 20 consultas por lote
+        for (let i = 0; i < list.length; i += 4) {
+          const b = db.batch();
+          list.slice(i, i + 4).forEach(c => {
+            b.set(ref(c.id), Object.assign({}, c, { eliminado: false, rev: FV.increment(1), updatedAt: TS(), updatedBy: by }), { merge: true });
+            b.set(histRef(c.id), { at: TS(), by, action: 'importar', rev: null, snapshot: c });
+          });
+          await b.commit();
+        }
+      }
+    };
+  }
+};
+
+/* =====================================================================
+   ACCESO (sin contraseña)
+   ===================================================================== */
+function authMsg(e) {
+  const m = {
+    'auth/popup-closed-by-user': 'Cerraste la ventana de Google antes de terminar.',
+    'auth/cancelled-popup-request': '',
+    'auth/popup-blocked': 'El navegador bloqueó la ventana de Google. Permite ventanas emergentes para este sitio e inténtalo de nuevo.',
+    'auth/unauthorized-domain': 'Este sitio no está autorizado en Firebase (Authentication → Configuración → Dominios autorizados).',
+    'auth/operation-not-allowed': 'Este método de acceso no está activado en Firebase (Authentication → Método de acceso).',
+    'auth/invalid-email': 'Escribe un correo válido.',
+    'auth/quota-exceeded': 'Se alcanzó el límite diario de enlaces por correo del plan gratuito de Firebase. Entra con Google o inténtalo mañana.',
+    'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos.',
+    'auth/network-request-failed': 'Sin conexión. Revisa tu internet.',
+    'auth/invalid-action-code': 'El enlace ya se usó o venció. Pide uno nuevo.',
+    'auth/expired-action-code': 'El enlace venció. Pide uno nuevo.'
+  };
+  return (e && e.code in m) ? m[e.code] : ('No se pudo entrar: ' + ((e && (e.message || e.code)) || e));
+}
+function showAuthError(msg) { const el = $('auth-error'); el.textContent = msg || ''; el.hidden = !msg; }
+function showAuth(view, msg) {
+  $('app').hidden = true; $('auth-screen').hidden = false;
+  clearTimeout(slowTimer); $('auth-check-slow').hidden = true;
+  if (view === 'check') slowTimer = setTimeout(() => { $('auth-check-slow').hidden = false; }, 12000);
+  ['check', 'login', 'sent', 'confirm', 'denied'].forEach(n => { $('auth-' + n).hidden = n !== view; });
+  if (view === 'denied') $('auth-denied-email').textContent = me.email || '';
+  showAuthError(msg || '');
+}
+async function authGoogle() {
+  showAuthError('');
+  try { await store.signInGoogle(); } catch (e) { const t = authMsg(e); if (t) showAuthError(t); }
+}
+async function authSendLink() {
+  const email = ($('auth-email').value || '').trim().toLowerCase();
+  if (!validEmail(email)) { showAuthError('Escribe un correo válido.'); return; }
+  showAuthError('');
+  try {
+    await store.sendLink(email);
+    try { localStorage.setItem(LS_MAIL, email); } catch (e) {}
+    $('auth-sent-to').textContent = email; showAuth('sent');
+  } catch (e) { showAuthError(authMsg(e)); }
+}
+async function finishLinkWith(email) {
+  finishingLink = true; showAuth('check'); $('auth-check-text').textContent = 'Terminando de entrar…';
+  try {
+    await store.finishLink(email);
+    try { localStorage.removeItem(LS_MAIL); } catch (e) {}
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  } catch (e) { finishingLink = false; showAuth('login', authMsg(e)); }
+}
+function authFinishLink() {
+  const email = ($('auth-confirm-email').value || '').trim().toLowerCase();
+  if (!validEmail(email)) { showAuthError('Escribe el mismo correo al que llegó el enlace.'); return; }
+  finishLinkWith(email);
+}
+async function authSignOut() {
+  stopAll(); clients = []; trash = []; accessList = [];
+  if (store && store.signOut) { try { await store.signOut(); } catch (e) {} }
+}
+
+function stopData() {
+  subsData.forEach(f => { try { f(); } catch (e) {} }); subsData = [];
+  if (subAdmin) { try { subAdmin(); } catch (e) {} subAdmin = null; }
+  dataStarted = false;
+}
+function stopAll() {
+  stopData();
+  if (subAccess) { try { subAccess(); } catch (e) {} subAccess = null; }
+}
+
+function onUser(u) {
+  stopAll();
+  if (!u) { me = { email: '', nombre: '', rol: '', demo: false }; bootTried = false; if (!finishingLink) showAuth('login'); return; }
+  finishingLink = false;
+  const email = String(u.email || '').toLowerCase();
+  me = { email, nombre: u.displayName || '', rol: '', demo: false };
+  if (!u.emailVerified || !email) { store.signOut(); showAuth('login', 'Tu correo no está verificado. Entra con Google o con el enlace por correo.'); return; }
+  showAuth('check'); $('auth-check-text').textContent = 'Verificando acceso…';
+  const deny = () => { stopData(); clients = []; trash = []; accessList = []; me.rol = ''; showAuth('denied'); };
+  subAccess = store.watchAccess(email, acc => {
+    if (!acc || !ROL_LABEL[acc.rol]) {
+      me.rol = ''; $('app').hidden = true;
+      if (!bootTried) { bootTried = true; store.bootstrapAdmin(email, u.displayName || '').catch(deny); }   // solo prospera para el administrador inicial de las reglas
+      else deny();
+      return;
+    }
+    me.rol = acc.rol; me.nombre = acc.nombre || u.displayName || email;
+    enterApp();
+  }, deny);
+}
+
+/* ---------------- entrada a la aplicación ---------------- */
+function applyRole() {
+  const show = (id, on, disp) => { const el = $(id); if (el) el.style.display = on ? (disp || '') : 'none'; };
+  show('tab-nuevo', canEdit()); show('btn-nuevo-top', canEdit(), 'inline-flex');
+  show('tab-usuarios', isAdmin() && !me.demo); show('backup-bar', isAdmin());
+  show('btn-salir', !me.demo, 'inline-flex');
+  $('foot-email').textContent = me.demo ? 'demo local' : me.email;
+  $('user-chip').innerHTML = '<span>' + esc(me.nombre || me.email) + '</span><span class="role-badge r-' + esc(me.rol) + '">' + esc(ROL_LABEL[me.rol] || '') + '</span>';
+  if (isAdmin() && !me.demo && store.watchAccessList && !subAdmin) {
+    subAdmin = store.watchAccessList(list => { accessList = list.slice().sort((a, b) => a.email.localeCompare(b.email)); renderAccess(); }, () => {});
+  } else if (!isAdmin() && subAdmin) { subAdmin(); subAdmin = null; accessList = []; }
+}
+function startData() {
+  dataStarted = true;
+  subsData.push(store.watchClients(list => {
+    const all = list.map(fromStore);
+    clients = all.filter(c => !c.eliminado).sort(byName);
+    trash = all.filter(c => c.eliminado).sort(byName);
+    setLive(true); renderClients(); updateTrash();
+  }, () => setLive(false)));
+}
+function enterApp() {
+  const first = !dataStarted;
+  $('auth-screen').hidden = true; $('app').hidden = false;
+  applyRole();
+  if (first) { startData(); showTab('lista'); }
+  else { const t = ['nuevo', 'lista', 'usuarios', 'ayuda'].find(x => $('panel-' + x).classList.contains('active')); showTab(t); renderClients(); }
+}
+function setLive(ok, text) {
+  const dot = $('live-dot'), t = $('live-text');
+  if (me.demo) { dot.className = 'live-dot demo'; t.textContent = 'Modo demo'; return; }
+  dot.className = 'live-dot ' + (ok ? 'on' : 'off'); t.textContent = text || (ok ? 'En vivo' : 'Sin conexión');
+}
+
+/* =====================================================================
+   PESTAÑAS
+   ===================================================================== */
+function showTab(tab) {
+  if (tab === 'nuevo' && !canEdit()) tab = 'lista';
+  if (tab === 'usuarios' && !(isAdmin() && !me.demo)) tab = 'lista';
+  ['nuevo', 'lista', 'usuarios', 'ayuda'].forEach(t => {
+    $('panel-' + t).classList.toggle('active', t === tab);
+    $('tab-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'lista') renderClients();
+  if (tab === 'usuarios') renderAccess();
+}
+function toggleSubcli(cb) { $('subcli-section').style.display = cb.checked ? 'none' : 'block'; }
+
+/* =====================================================================
+   FORMULARIO
+   ===================================================================== */
+function addDir(val = {}) {
+  const id = ++dirCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item'; el.id = 'dir-' + id;
+  el.innerHTML = `<div class="dyn-item-grid">
+    <div class="field"><label>Nombre / Referencia del Punto</label>
+      <input type="text" id="dir-ref-${id}" placeholder="Ej. CEDIS Norte, Planta..." value="${esc(val.ref)}"/></div>
+    <div class="field"><label>Dirección Completa</label>
+      <input type="text" id="dir-addr-${id}" placeholder="Calle, Núm, Colonia, Ciudad..." value="${esc(val.addr)}"/></div>
+  </div>
+  <div class="dyn-item-actions"><button class="btn btn-danger btn-sm" onclick="document.getElementById('dir-${id}').remove()">🗑 Eliminar</button></div>`;
+  $('list-dirs').appendChild(el);
+}
+function addContact(val = {}) {
+  const id = ++contactCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item'; el.id = 'con-' + id;
+  el.innerHTML = `<div class="dyn-item-grid">
+    <div class="field"><label>Nombre del Contacto</label>
+      <input type="text" id="con-name-${id}" placeholder="Nombre completo" value="${esc(val.name)}"/></div>
+    <div class="field"><label>Cargo / Área</label>
+      <input type="text" id="con-role-${id}" placeholder="Ej. Recepción, Almacén..." value="${esc(val.role)}"/></div>
+    <div class="field"><label>Teléfono</label>
+      <input type="text" id="con-tel-${id}" placeholder="Ej. 871-123-4567" value="${esc(val.tel)}"/></div>
+    <div class="field"><label>Punto de Entrega Relacionado</label>
+      <input type="text" id="con-punto-${id}" placeholder="Ej. CEDIS Norte" value="${esc(val.punto)}"/></div>
+  </div>
+  <div class="dyn-item-actions"><button class="btn btn-danger btn-sm" onclick="document.getElementById('con-${id}').remove()">🗑 Eliminar</button></div>`;
+  $('list-contacts').appendChild(el);
+}
+function addSubcli(val = {}) {
+  const id = ++subcliCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item subcli-item'; el.id = 'sub-' + id;
+  el.innerHTML = `<div class="dyn-item-grid">
+    <div class="field form-full" style="grid-column:1/-1"><label>Nombre del Subcliente *</label>
+      <input type="text" id="sub-nombre-${id}" placeholder="Ej. LALA Gómez Palacio, División Norte..." value="${esc(val.nombre)}"/></div>
+    <div class="field"><label>Dirección de Entrega</label>
+      <input type="text" id="sub-dir-${id}" placeholder="Dirección del subcliente" value="${esc(val.dir)}"/></div>
+    <div class="field"><label>Origen <span class="field-hint">(de dónde sale la carga)</span></label>
+      <input type="text" id="sub-origen-${id}" placeholder="Ej. Planta, bodega o punto de carga" value="${esc(val.origen)}"/></div>
+    <div class="field"><label>Horario de Atención</label>
+      <input type="text" id="sub-horario-${id}" placeholder="Ej. Lun–Vie 6:00–15:00" value="${esc(val.horario)}"/></div>
+    <div class="field"><label>Contacto Principal</label>
+      <input type="text" id="sub-contacto-${id}" placeholder="Nombre del contacto" value="${esc(val.contacto)}"/></div>
+    <div class="field"><label>Teléfono Contacto</label>
+      <input type="text" id="sub-tel-${id}" placeholder="Ej. 871-123-4567" value="${esc(val.tel)}"/></div>
+    <div class="field"><label>Bonificaciones</label>
+      <input type="text" id="sub-bonif-${id}" placeholder="Ej. Descarga nocturna $300" value="${esc(val.bonif)}"/></div>
+    <div class="field form-full" style="grid-column:1/-1"><label>Observaciones del Subcliente</label>
+      <input type="text" id="sub-obs-${id}" placeholder="Indicaciones especiales para este subcliente..." value="${esc(val.obs)}"/></div>
+  </div>
+  <div class="dyn-item-actions"><button class="btn btn-danger btn-sm" onclick="document.getElementById('sub-${id}').remove()">🗑 Eliminar</button></div>`;
+  $('list-subcli').appendChild(el);
+}
+function addBonif(val = {}) {
+  const id = ++bonifCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item'; el.id = 'bon-' + id;
+  el.innerHTML = `<div class="dyn-item-grid">
+    <div class="field"><label>Concepto / Actividad</label>
+      <input type="text" id="bon-con-${id}" placeholder="Ej. Descarga nocturna..." value="${esc(val.concepto)}"/></div>
+    <div class="field"><label>Monto</label>
+      <input type="text" id="bon-monto-${id}" placeholder="Ej. $300" value="${esc(val.monto)}"/></div>
+    <div class="field form-full" style="grid-column:1/-1"><label>Observación / Condición</label>
+      <input type="text" id="bon-obs-${id}" placeholder="Ej. Solo aplica después de las 7pm..." value="${esc(val.obs)}"/></div>
+  </div>
+  <div class="dyn-item-actions"><button class="btn btn-danger btn-sm" onclick="document.getElementById('bon-${id}').remove()">🗑 Eliminar</button></div>`;
+  $('list-bonif').appendChild(el);
+}
+function collectDirs() {
+  return [...document.querySelectorAll('[id^="dir-ref-"]')].map(el => {
+    const id = el.id.replace('dir-ref-', '');
+    return { ref: el.value.trim(), addr: v('dir-addr-' + id) };
+  }).filter(d => d.ref || d.addr);
+}
+function collectContacts() {
+  return [...document.querySelectorAll('[id^="con-name-"]')].map(el => {
+    const id = el.id.replace('con-name-', '');
+    return { name: el.value.trim(), role: v('con-role-' + id), tel: v('con-tel-' + id), punto: v('con-punto-' + id) };
+  }).filter(c => c.name);
+}
+function collectSubcli() {
+  const na = $('f-subcli-na');
+  if (na && na.checked) return 'NA';
+  return [...document.querySelectorAll('[id^="sub-nombre-"]')].map(el => {
+    const id = el.id.replace('sub-nombre-', '');
+    return { nombre: el.value.trim(), dir: v('sub-dir-' + id), origen: v('sub-origen-' + id), horario: v('sub-horario-' + id), contacto: v('sub-contacto-' + id), tel: v('sub-tel-' + id), bonif: v('sub-bonif-' + id), obs: v('sub-obs-' + id) };
+  }).filter(s => s.nombre);
+}
+function collectBonif() {
+  return [...document.querySelectorAll('[id^="bon-con-"]')].map(el => {
+    const id = el.id.replace('bon-con-', '');
+    return { concepto: el.value.trim(), monto: v('bon-monto-' + id), obs: v('bon-obs-' + id) };
+  }).filter(b => b.concepto);
+}
+
+async function saveClient() {
+  if (!canEdit()) { showToast('⚠ Tu permiso no incluye editar clientes', 'error'); return; }
+  const nombre = v('f-nombre');
+  if (!nombre) { showToast('⚠ El nombre del cliente es obligatorio', 'error'); return; }
+  const isNew = !editingId, id = editingId || newId();
+  const client = { id, nombre, carga: v('f-carga'), horario: v('f-horario'), reqCarga: v('f-req'), reqDescarga: v('f-reqd'), dirs: collectDirs(), contacts: collectContacts(), subcli: collectSubcli(), bonif: collectBonif(), obs: v('f-obs') };
+  const btn = $('btn-save'); btn.disabled = true;
+  try {
+    await store.saveClient(client, { isNew, expectedRev: editingRev }, me.email);
+    showToast(isNew ? '✅ Cliente guardado correctamente' : '✅ Cliente actualizado', 'success');
+    resetForm(); clearSearch(true); showTab('lista');
+  } catch (e) {
+    if (e.code === 'conflict') {
+      if (confirm('Otra persona modificó este cliente mientras lo editabas.\n\nAceptar: cargar su versión (se pierden tus cambios en pantalla).\nCancelar: seguir editando para copiar lo tuyo.')) editClient(id);
+    } else if (e.code === 'deleted') { showToast('⚠ Este cliente ya no existe o está en la papelera', 'error'); }
+    else if (e.code === 'permission-denied') { showToast('⚠ Sin permiso para guardar. Avisa al administrador.', 'error'); }
+    else { showToast('⚠ No se pudo guardar: ' + (e.message || e.code || e), 'error'); }
+  } finally { btn.disabled = false; }
+}
+
+function resetForm() {
+  ['f-nombre', 'f-carga', 'f-horario', 'f-req', 'f-reqd', 'f-obs'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  ['list-dirs', 'list-contacts', 'list-subcli', 'list-bonif'].forEach(id => { const el = $(id); if (el) el.innerHTML = ''; });
+  const na = $('f-subcli-na');
+  if (na) { na.checked = false; toggleSubcli(na); }
+  dirCount = 0; contactCount = 0; subcliCount = 0; bonifCount = 0; editingId = null; editingRev = 0;
+  $('form-title').textContent = 'Registro de Cliente';
+}
+function fillForm(c) {
+  resetForm();
+  $('f-nombre').value = c.nombre; $('f-carga').value = c.carga || ''; $('f-horario').value = c.horario || '';
+  $('f-req').value = c.reqCarga || ''; $('f-reqd').value = c.reqDescarga || ''; $('f-obs').value = c.obs || '';
+  (c.dirs || []).forEach(d => addDir(d));
+  (c.contacts || []).forEach(ct => addContact(ct));
+  if (c.subcli === 'NA') { const na = $('f-subcli-na'); if (na) { na.checked = true; toggleSubcli(na); } }
+  else if (Array.isArray(c.subcli)) { c.subcli.forEach(s => addSubcli(s)); }
+  (c.bonif || []).forEach(b => addBonif(b));
+}
+function editClient(id) {
+  const c = clients.find(x => x.id === id); if (!c) return;
+  if (!canEdit()) return;
+  fillForm(c); editingId = id; editingRev = c.rev || 0;
+  $('form-title').textContent = 'Editar Cliente';
+  showTab('nuevo'); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function loadVersion(id, snap) {
+  const cur = clients.find(x => x.id === id); if (!cur || !isAdmin()) return;
+  fillForm(cleanClient(Object.assign({}, snap, { id }), true)); editingId = id; editingRev = cur.rev || 0;
+  $('form-title').textContent = 'Editar Cliente · versión anterior cargada (revisa y guarda)';
+  closeModalDirect(); showTab('nuevo'); window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('Versión cargada en el formulario. Revísala y pulsa Guardar.');
+}
+
+/* =====================================================================
+   LISTA, BUSCADOR Y DETALLE
+   ===================================================================== */
+// ---- Buscador de clientes ----
+// Ignora mayúsculas y acentos; varias palabras = todas deben aparecer (en cualquier parte del cliente)
+function norm(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+function searchFields(c) {
+  const subs = Array.isArray(c.subcli) ? c.subcli : [];
+  const j = arr => arr.filter(Boolean).join(' ');
+  return [
+    ['Nombre', c.nombre],
+    ['Tipo de carga / horario', j([c.carga, c.horario])],
+    ['Requisitos de carga', c.reqCarga],
+    ['Requisitos de descarga', c.reqDescarga],
+    ['Direcciones', j((c.dirs || []).map(d => j([d.ref, d.addr])))],
+    ['Contactos', j((c.contacts || []).map(x => j([x.name, x.role, x.tel, x.punto])))],
+    ['Subclientes', j(subs.map(x => j([x.nombre, x.dir, x.origen, x.horario, x.contacto, x.tel, x.bonif, x.obs])))],
+    ['Bonificaciones', j((c.bonif || []).map(b => j([b.concepto, b.monto, b.obs])))],
+    ['Observaciones', c.obs]
+  ].map(f => [f[0], norm(f[1])]);
+}
+function searchTerms() { const el = $('search-input'); return norm(el ? el.value : '').split(/\s+/).filter(Boolean); }
+function matchClient(c, terms) {
+  if (!terms.length) return { ok: true, where: [], nameHit: false };
+  const f = searchFields(c);
+  const all = f.map(x => x[1]).join(' \n ');
+  if (!terms.every(t => all.includes(t))) return { ok: false, where: [], nameHit: false };
+  return { ok: true, where: f.filter(x => terms.some(t => x[1].includes(t))).map(x => x[0]), nameHit: terms.every(t => f[0][1].includes(t)) };
+}
+function clearSearch(silent) {
+  const el = $('search-input');
+  if (el) el.value = '';
+  if (!silent) { renderClients(); if (el) el.focus(); }
+}
+
+// Buscador del manual generado: se inserta como script independiente dentro del HTML del manual
+function manualSearch() {
+  var q = document.getElementById('q'), n = document.getElementById('qn');
+  var pages = [].slice.call(document.querySelectorAll('.page'));
+  var cover = document.querySelector('.cover');
+  function norm(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  var texts = pages.map(function (p) { return norm(p.textContent); });
+  function run() {
+    var t = norm(q.value).split(/\s+/).filter(Boolean), c = 0;
+    if (cover) cover.hidden = t.length > 0;
+    pages.forEach(function (p, i) {
+      var ok = t.every(function (w) { return texts[i].indexOf(w) > -1; });
+      p.hidden = !ok;
+      if (ok) c++;
+    });
+    n.textContent = t.length ? (c + ' de ' + pages.length) : '';
+  }
+  q.addEventListener('input', run);
+}
+
+function renderClients() {
+  const container = $('clients-container');
+  const input = $('search-input');
+  const counter = $('search-count');
+  const terms = searchTerms();
+  $('count-badge').textContent = clients.length;
+  $('btn-manual').style.display = clients.length ? 'inline-flex' : 'none';
+  $('search-bar').style.display = clients.length ? 'flex' : 'none';
+  $('search-clear').classList.toggle('show', !!(input && input.value));
+  if (!clients.length) { counter.innerHTML = ''; container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><h3>Sin clientes registrados</h3><p>${canEdit() ? 'Ve a "Registrar Cliente" para comenzar' : 'Aún no hay clientes cargados'}</p></div>`; return; }
+  const rows = clients.map(c => ({ c: c, m: matchClient(c, terms) })).filter(r => r.m.ok);
+  if (terms.length) rows.sort((a, b) => (b.m.nameHit ? 1 : 0) - (a.m.nameHit ? 1 : 0));
+  counter.innerHTML = terms.length ? `<strong>${rows.length}</strong> de ${clients.length} clientes` : '';
+  if (!rows.length) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔎</div><h3>Sin resultados</h3><p>Ningún cliente coincide con «${esc(input.value.trim())}»</p><button class="btn btn-ghost btn-sm" style="margin-top:14px" data-act="limpiar">Limpiar búsqueda</button></div>`; return; }
+  const subcliLabel = c => { if (c.subcli === 'NA') return '⊘ Sin subclientes'; if (Array.isArray(c.subcli) && c.subcli.length) return c.subcli.length + ' subcliente(s)'; return ''; };
+  container.innerHTML = `<div class="client-grid">${rows.map(r => {
+    const c = r.c, nc = reqList(c).length, nd = reqList(c, 'reqDescarga').length, id = esc(c.id);
+    const reqTxt = [nc ? nc + ' requisito(s) de carga' : '', nd ? nd + ' requisito(s) de descarga' : ''].filter(Boolean).join(' · ');
+    return `
+    <div class="client-card">
+      <div class="client-card-top">
+        <div class="client-avatar">${esc(c.nombre.charAt(0).toUpperCase())}</div>
+        <div><div class="client-card-name">${esc(c.nombre)}</div>
+        <div class="client-card-meta">${c.dirs.length} punto(s) · ${c.contacts.length} contacto(s)</div></div>
+      </div>
+      <div class="client-card-body">
+        ${terms.length && r.m.where.length ? `<div class="client-info-row match-row"><strong>Coincide</strong>${esc(r.m.where.join(', '))}</div>` : ''}
+        ${c.carga ? `<div class="client-info-row"><strong>Carga</strong>${esc(c.carga)}</div>` : ''}
+        ${c.horario ? `<div class="client-info-row"><strong>Horario</strong>${esc(c.horario)}</div>` : ''}
+        ${reqTxt ? `<div class="client-info-row"><strong>Req.</strong>${reqTxt}</div>` : ''}
+        ${subcliLabel(c) ? `<div class="client-info-row"><strong>Subcli.</strong>${subcliLabel(c)}</div>` : ''}
+        ${c.bonif.length ? `<div class="client-info-row"><strong>Bonif.</strong>${c.bonif.length} concepto(s)</div>` : ''}
+      </div>
+      <div class="client-card-actions">
+        <button class="btn btn-ghost btn-sm" style="flex:1" data-act="ver" data-id="${id}">👁 Ver</button>
+        ${canEdit() ? `<button class="btn btn-navy btn-sm" style="flex:1" data-act="editar" data-id="${id}">✏️ Editar</button>` : ''}
+        ${isAdmin() ? `<button class="btn btn-danger btn-sm" data-act="borrar" data-id="${id}" title="Mover a la papelera">🗑</button>` : ''}
+      </div>
+    </div>`; }).join('')}</div>`;
+}
+
+function viewClient(id) {
+  const c = clients.find(x => x.id === id) || (isAdmin() ? trash.find(x => x.id === id) : null); if (!c) return;
+  $('modal-title').textContent = c.nombre;
+  let html = '';
+  if (c.carga || c.horario) { html += `<div class="detail-section"><div class="detail-label">Información General</div>`; if (c.carga) html += `<span class="detail-tag">📦 ${esc(c.carga)}</span>`; if (c.horario) html += `<span class="detail-tag">🕐 ${esc(c.horario)}</span>`; html += '</div>'; }
+  const reqs = reqList(c);
+  if (reqs.length) { html += `<div class="detail-section"><div class="detail-label">Requisitos de Carga</div><div class="req-box">${reqs.map(r => `<div class="req-item">${esc(r)}</div>`).join('')}</div></div>`; }
+  const reqsD = reqList(c, 'reqDescarga');
+  if (reqsD.length) { html += `<div class="detail-section"><div class="detail-label">Requisitos de Descarga</div><div class="req-box desc">${reqsD.map(r => `<div class="req-item">${esc(r)}</div>`).join('')}</div></div>`; }
+  if (c.dirs.length) { html += `<div class="detail-section"><div class="detail-label">Direcciones de Entrega</div>`; c.dirs.forEach(d => html += `<div class="address-block"><strong>📍 ${esc(d.ref || 'Punto de entrega')}</strong><p>${esc(d.addr)}</p></div>`); html += '</div>'; }
+  if (c.contacts.length) { html += `<div class="detail-section"><div class="detail-label">Contactos</div>`; c.contacts.forEach(ct => html += `<div class="contact-chip"><div class="contact-chip-av">${esc(ct.name.charAt(0).toUpperCase())}</div><div><div class="contact-chip-name">${esc(ct.name)}</div><div class="contact-chip-role">${esc([ct.role, ct.punto, ct.tel ? '📞 ' + ct.tel : ''].filter(Boolean).join(' · '))}</div></div></div>`); html += '</div>'; }
+  if (c.subcli === 'NA') { html += `<div class="detail-section"><div class="detail-label">Subclientes</div><span class="subcli-na">⊘ No Aplica</span></div>`; }
+  else if (Array.isArray(c.subcli) && c.subcli.length) {
+    html += `<div class="detail-section"><div class="detail-label">Subclientes</div>`;
+    c.subcli.forEach(s => {
+      html += `<div class="subcli-block"><div class="subcli-block-name">🏬 ${esc(s.nombre)}</div>`;
+      if (s.dir) html += `<p>📍 Entrega: ${esc(s.dir)}</p>`;
+      if (s.origen) html += `<p>🚛 Origen: ${esc(s.origen)}</p>`;
+      if (s.horario) html += `<p>🕐 ${esc(s.horario)}</p>`;
+      if (s.contacto) html += `<p>👤 ${esc(s.contacto)}${s.tel ? ' · 📞 ' + esc(s.tel) : ''}</p>`;
+      if (s.bonif) html += `<p>💰 ${esc(s.bonif)}</p>`;
+      if (s.obs) html += `<p style="color:var(--orange-dark);font-size:12px;margin-top:4px">⚠ ${esc(s.obs)}</p>`;
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  if (c.bonif.length) { html += `<div class="detail-section"><div class="detail-label">Bonificaciones</div><div style="background:var(--gray);border-radius:10px;padding:14px 16px">`; c.bonif.forEach(b => html += `<div class="bonif-row"><span>${esc(b.concepto)}${b.obs ? ` <span style="color:var(--text-soft);font-size:12px">— ${esc(b.obs)}</span>` : ''}</span><span class="bonif-amount">${esc(b.monto)}</span></div>`); html += '</div></div>'; }
+  if (c.obs) html += `<div class="detail-section"><div class="detail-label">Observaciones</div><div class="detail-obs">${esc(c.obs)}</div></div>`;
+  const meta = c.updatedBy ? `Última edición: ${esc(c.updatedBy)}${c.updatedAt ? ' · ' + esc(fmtFecha(c.updatedAt)) : ''} · cambio n.º ${c.rev}` : 'Sin cambios registrados todavía';
+  html += `<div class="detail-section"><div class="detail-label">Control de cambios</div><p class="meta-line">${meta}</p><button class="btn btn-ghost btn-sm" data-hist="${esc(c.id)}">🕘 Ver historial</button><div id="hist-box"></div></div>`;
+  $('modal-body').innerHTML = html;
+  $('modal-overlay').classList.add('open');
+}
+
+const ACCION = { crear: 'Creó', editar: 'Editó', eliminar: 'Envió a la papelera', restaurar: 'Restauró', importar: 'Importó' };
+let histCache = [];
+async function showHistory(id) {
+  const box = $('hist-box'); box.innerHTML = '<p class="meta-line">Cargando…</p>';
+  try {
+    histCache = await store.history(id);
+    if (!histCache.length) { box.innerHTML = '<p class="meta-line">Todavía no hay historial.</p>'; return; }
+    box.innerHTML = '<div class="hist-list">' + histCache.map((h, i) => `<div class="hist-row"><span>${esc(fmtFecha(h.at) || 'guardando…')} · <strong>${esc(h.by || '')}</strong> · ${esc(ACCION[h.action] || h.action)}</span>${isAdmin() && h.snapshot && h.action !== 'eliminar' && h.action !== 'restaurar' ? `<button class="btn btn-ghost btn-sm" data-load="${i}" data-cid="${esc(id)}">Cargar en el formulario</button>` : ''}</div>`).join('') + '</div>';
+  } catch (e) { box.innerHTML = '<p class="meta-line">No se pudo leer el historial.</p>'; }
+}
+
+async function deleteClient(id) {
+  if (!isAdmin()) return;
+  const c = clients.find(x => x.id === id); if (!c) return;
+  if (!confirm('¿Mover "' + c.nombre + '" a la papelera?\nSe puede restaurar desde la Papelera.')) return;
+  try { await store.softDelete(c, me.email); showToast('Cliente enviado a la papelera'); }
+  catch (e) { showToast('⚠ No se pudo eliminar: ' + (e.message || e.code), 'error'); }
+}
+function updateTrash() {
+  $('trash-n').textContent = trash.length;
+  $('btn-trash').style.display = isAdmin() && trash.length ? 'inline-flex' : 'none';
+}
+function showTrash() {
+  if (!isAdmin()) return;
+  $('modal-title').textContent = 'Papelera';
+  $('modal-body').innerHTML = trash.length
+    ? trash.map(c => `<div class="hist-row"><span><strong>${esc(c.nombre)}</strong><br><span class="meta-line">Eliminado por ${esc(c.eliminadoPor || '—')}${c.eliminadoAt ? ' · ' + esc(fmtFecha(c.eliminadoAt)) : ''}</span></span><button class="btn btn-green btn-sm" data-restore="${esc(c.id)}">↩ Restaurar</button></div>`).join('')
+    : '<p class="meta-line">La papelera está vacía.</p>';
+  $('modal-overlay').classList.add('open');
+}
+async function restoreClient(id) {
+  const c = trash.find(x => x.id === id); if (!c || !isAdmin()) return;
+  try { await store.restore(c, me.email); showToast('✅ Cliente restaurado', 'success'); if (trash.length <= 1) closeModalDirect(); else setTimeout(showTrash, 50); }
+  catch (e) { showToast('⚠ No se pudo restaurar: ' + (e.message || e.code), 'error'); }
+}
+
+function closeModal(e) { if (e.target === $('modal-overlay')) closeModalDirect(); }
+function closeModalDirect() { $('modal-overlay').classList.remove('open'); }
+
+/* =====================================================================
+   ACCESOS (solo administradores)
+   ===================================================================== */
+function renderAccess() {
+  const box = $('acc-table'); if (!box) return;
+  $('acc-count').textContent = accessList.length;
+  if (!accessList.length) { box.innerHTML = '<p class="meta-line">Aún no hay correos en la lista.</p>'; return; }
+  box.innerHTML = '<table class="acc-table"><tr><th>Correo</th><th>Nombre</th><th>Permiso</th><th></th></tr>' + accessList.map(a => {
+    const self = a.email === me.email;
+    return `<tr><td>${esc(a.email)}${self ? ' <span class="meta-line">(tú)</span>' : ''}</td><td>${esc(a.nombre || '')}</td>
+      <td><select data-email="${esc(a.email)}" ${self ? 'disabled' : ''}>${Object.keys(ROL_LABEL).map(r => `<option value="${r}" ${a.rol === r ? 'selected' : ''}>${ROL_LABEL[r]}</option>`).join('')}</select></td>
+      <td>${self ? '' : `<button class="btn btn-danger btn-sm" data-del="${esc(a.email)}">Quitar</button>`}</td></tr>`;
+  }).join('') + '</table>';
+}
+async function addAccess() {
+  if (!isAdmin()) return;
+  const rol = $('acc-rol').value;
+  const raw = String($('acc-emails').value || '').split(/[\s,;]+/).map(s => s.trim().toLowerCase()).filter(Boolean)
+    .map(s => (DOMINIO && /^[a-z0-9._%+'-]+$/.test(s)) ? s + '@' + DOMINIO : s);   // "juan.perez" -> juan.perez@difeyro.com
+  let valid = [...new Set(raw.filter(validEmail))].filter(e => e !== me.email);
+  const bad = raw.filter(e => !validEmail(e));
+  if (DOMINIO) {
+    const fuera = valid.filter(e => !e.endsWith('@' + DOMINIO));
+    if (fuera.length && !confirm('Estos correos NO son @' + DOMINIO + ':\n\n' + fuera.join('\n') + '\n\n¿Darles acceso de todos modos?\nAceptar: sí. Cancelar: se omiten (los demás sí se agregan).')) valid = valid.filter(e => !fuera.includes(e));
+  }
+  if (!valid.length) { showToast('⚠ Escribe al menos un correo válido (que no sea el tuyo)', 'error'); return; }
+  try {
+    await Promise.all(valid.map(e => { const ex = accessList.find(a => a.email === e); return store.setAccess(e, rol, ex ? ex.nombre : '', me.email); }));
+    $('acc-emails').value = '';
+    showToast('✅ ' + valid.length + ' correo(s) con acceso' + (bad.length ? ' · omitidos por inválidos: ' + bad.join(', ') : ''), 'success');
+  } catch (e) { showToast('⚠ No se pudo guardar: ' + (e.message || e.code), 'error'); }
+}
+
+/* =====================================================================
+   RESPALDO (solo administradores)
+   ===================================================================== */
+function exportData() {
+  if (!isAdmin()) return;
+  if (!clients.length) { showToast('⚠ No hay clientes para exportar', 'error'); return; }
+  const data = { version: '2.0', fecha: new Date().toISOString(), empresa: 'Difeyro Servicios', clientes: clients.map(c => cleanClient(c, true)) };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `DIFEYRO_Clientes_${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  showToast('✅ Respaldo descargado', 'success');
+}
+function importData(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      const raw = data.clientes || data;
+      if (!Array.isArray(raw)) throw new Error('Formato inválido');
+      const list = raw.filter(x => x && String(x.nombre || '').trim()).map(x => cleanClient(x));
+      if (!list.length) throw new Error('Sin clientes');
+      const existing = new Set(clients.concat(trash).map(c => c.id));
+      const nuevos = list.filter(c => !existing.has(c.id)).length, viejos = list.length - nuevos;
+      if (!confirm(`Se importarán ${list.length} cliente(s): ${nuevos} nuevo(s) y ${viejos} que ya existen.\n\nLos que ya existen se sobrescriben con el contenido del archivo (el historial conserva la versión anterior). Los demás clientes no se tocan.\n\n¿Continuar?`)) return;
+      await store.importMany(list, me.email);
+      clearSearch(true); renderClients();
+      showToast(`✅ ${list.length} cliente(s) importado(s)`, 'success');
+    } catch (err) { showToast('⚠ Archivo inválido o no se pudo importar', 'error'); }
+  };
+  reader.readAsText(file); event.target.value = '';
+}
+
+/* =====================================================================
+   MANUAL (todos los permisos)
+   ===================================================================== */
+function generateManual() {
+  if (!clients.length) { showToast('⚠ No hay clientes registrados', 'error'); return; }
+  const today = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><title>Manual de Clientes — Difeyro Servicios</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@300;400;500;600&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Barlow',sans-serif;color:#1e2235;background:white;}
+    .cover{page-break-after:always;min-height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1A2B6B;color:white;text-align:center;padding:40px;}
+    .cover-title{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:800;letter-spacing:2px;}
+    .cover-sub{font-family:'Barlow Condensed',sans-serif;font-size:28px;color:#E87722;margin:10px 0 20px;}
+    .cover-line{width:200px;height:4px;background:linear-gradient(to right,#E87722,#1A2B6B);margin:20px auto;}
+    .cover-meta{font-size:15px;color:#8fa0d4;margin-top:10px;}
+    .page{page-break-after:always;padding:36px 44px;}
+    .c-header{background:#1A2B6B;padding:18px 22px;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:14px;}
+    .c-av{width:48px;height:48px;background:#E87722;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:white;flex-shrink:0;}
+    .c-name{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:white;}
+    .c-meta{font-size:12px;color:#8fa0d4;margin-top:2px;}
+    .sec{margin:16px 0;}.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#6b7294;border-bottom:2px solid #E87722;padding-bottom:4px;margin-bottom:10px;}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;}.tag{background:#e8ebf5;color:#1A2B6B;border-radius:6px;padding:4px 12px;font-size:13px;font-weight:500;}
+    .req{background:#e8ebf5;border-left:3px solid #1A2B6B;padding:10px 14px;border-radius:0 8px 8px 0;}
+    .req-i{font-size:13px;padding:2px 0;}.req-i:before{content:"☑ ";color:#E87722;font-weight:700;}
+    .req.desc{background:#fde9d3;border-left-color:#E87722;}.req.desc .req-i:before{color:#1A2B6B;}
+    .cover[hidden],.page[hidden]{display:none;}
+    .searchbar{position:sticky;top:0;z-index:50;height:52px;background:#111d4a;display:flex;align-items:center;gap:12px;padding:0 20px;}
+    .searchbar input{flex:1;max-width:520px;border:none;border-radius:8px;padding:9px 14px;font-family:'Barlow',sans-serif;font-size:14px;}
+    .searchbar .qn{color:#8fa0d4;font-size:13px;white-space:nowrap;}
+    .addr{background:#f4f5f8;border-left:3px solid #1A2B6B;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:8px;}
+    .addr strong{font-size:13px;color:#1A2B6B;display:block;margin-bottom:3px;}.addr p{font-size:12px;color:#6b7294;}
+    .ct{display:flex;gap:10px;align-items:center;padding:8px 10px;background:#f4f5f8;border-radius:8px;margin-bottom:7px;}
+    .ct-av{width:32px;height:32px;background:#E87722;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
+    .ct-name{font-size:13px;font-weight:600;color:#1e2235;}.ct-role{font-size:11px;color:#6b7294;}
+    .subcli{background:#e8ebf5;border-left:3px solid #1A2B6B;padding:12px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+    .subcli-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#1A2B6B;margin-bottom:6px;}
+    .subcli p{font-size:12px;color:#6b7294;margin-bottom:3px;}.subcli-na{background:#f0f0f0;color:#999;border-radius:6px;padding:5px 12px;font-size:13px;display:inline-block;}
+    table.bon{width:100%;border-collapse:collapse;}table.bon th{background:#1A2B6B;color:white;padding:8px 12px;font-size:12px;text-align:left;}
+    table.bon td{padding:7px 12px;font-size:12px;border-bottom:1px solid #e8ebf5;}table.bon tr:nth-child(even) td{background:#fde9d3;}
+    .obs{background:#fff8f0;border-left:3px solid #E87722;padding:12px 14px;border-radius:0 8px 8px 0;font-size:13px;}
+    @media print{.page{page-break-after:always;}.cover{page-break-after:always;min-height:100vh;}.searchbar{display:none!important;}.page[hidden]{display:block!important;}.cover[hidden]{display:flex!important;}}
+  </style></head><body>
+  <div class="searchbar"><span>🔎</span><input id="q" type="search" placeholder="Buscar cliente, contacto, requisito..." autocomplete="off"/><span class="qn" id="qn"></span></div>
+  <div class="cover">
+    <div class="cover-title">DIFEYRO SERVICIOS</div>
+    <div class="cover-sub">MANUAL DE CLIENTES</div>
+    <div class="cover-line"></div>
+    <div class="cover-meta">Operación Local · Última actualización: ${esc(today)}</div>
+    <div class="cover-meta" style="margin-top:8px;font-size:13px">${clients.length} cliente(s) registrado(s) · Documento Confidencial</div>
+  </div>`;
+
+  clients.forEach(c => {
+    const sl = c.subcli === 'NA' ? '⊘ Sin subclientes' : (Array.isArray(c.subcli) && c.subcli.length ? c.subcli.length + ' subcliente(s)' : '');
+    html += `<div class="page"><div class="c-header"><div class="c-av">${esc(c.nombre.charAt(0).toUpperCase())}</div>
+      <div><div class="c-name">${esc(c.nombre)}</div><div class="c-meta">${esc([c.dirs.length + ' punto(s)', c.contacts.length + ' contacto(s)', sl].filter(Boolean).join(' · '))}</div></div></div>`;
+    if (c.carga || c.horario) { html += `<div class="sec"><div class="sec-title">Información General</div><div class="tags">`; if (c.carga) html += `<span class="tag">📦 ${esc(c.carga)}</span>`; if (c.horario) html += `<span class="tag">🕐 ${esc(c.horario)}</span>`; html += `</div></div>`; }
+    const reqs = reqList(c);
+    if (reqs.length) { html += `<div class="sec"><div class="sec-title">Requisitos de Carga</div><div class="req">${reqs.map(r => `<div class="req-i">${esc(r)}</div>`).join('')}</div></div>`; }
+    const reqsD = reqList(c, 'reqDescarga');
+    if (reqsD.length) { html += `<div class="sec"><div class="sec-title">Requisitos de Descarga</div><div class="req desc">${reqsD.map(r => `<div class="req-i">${esc(r)}</div>`).join('')}</div></div>`; }
+    if (c.dirs.length) { html += `<div class="sec"><div class="sec-title">Direcciones de Entrega</div>`; c.dirs.forEach(d => html += `<div class="addr"><strong>📍 ${esc(d.ref || 'Punto de entrega')}</strong><p>${esc(d.addr)}</p></div>`); html += `</div>`; }
+    if (c.contacts.length) { html += `<div class="sec"><div class="sec-title">Contactos</div>`; c.contacts.forEach(ct => html += `<div class="ct"><div class="ct-av">${esc(ct.name.charAt(0).toUpperCase())}</div><div><div class="ct-name">${esc(ct.name)}</div><div class="ct-role">${esc([ct.role, ct.punto, ct.tel ? '📞 ' + ct.tel : ''].filter(Boolean).join(' · '))}</div></div></div>`); html += `</div>`; }
+    if (c.subcli === 'NA') { html += `<div class="sec"><div class="sec-title">Subclientes</div><span class="subcli-na">⊘ No Aplica</span></div>`; }
+    else if (Array.isArray(c.subcli) && c.subcli.length) {
+      html += `<div class="sec"><div class="sec-title">Subclientes</div>`;
+      c.subcli.forEach(s => { html += `<div class="subcli"><div class="subcli-name">🏬 ${esc(s.nombre)}</div>`; if (s.dir) html += `<p>📍 Entrega: ${esc(s.dir)}</p>`; if (s.origen) html += `<p>🚛 Origen: ${esc(s.origen)}</p>`; if (s.horario) html += `<p>🕐 ${esc(s.horario)}</p>`; if (s.contacto) html += `<p>👤 ${esc(s.contacto)}${s.tel ? ' · 📞 ' + esc(s.tel) : ''}</p>`; if (s.bonif) html += `<p>💰 ${esc(s.bonif)}</p>`; if (s.obs) html += `<p style="color:#c45f0a;font-size:11px;margin-top:4px">⚠ ${esc(s.obs)}</p>`; html += `</div>`; });
+      html += `</div>`;
+    }
+    if (c.bonif.length) { html += `<div class="sec"><div class="sec-title">Bonificaciones</div><table class="bon"><tr><th>Concepto</th><th>Observación</th><th>Monto</th></tr>`; c.bonif.forEach(b => html += `<tr><td>${esc(b.concepto)}</td><td>${esc(b.obs || '—')}</td><td><strong>${esc(b.monto)}</strong></td></tr>`); html += `</table></div>`; }
+    if (c.obs) html += `<div class="sec"><div class="sec-title">Observaciones Especiales</div><div class="obs">${esc(c.obs)}</div></div>`;
+    html += `</div>`;
+  });
+  html += `<script>(${manualSearch.toString()})();<\/script></body></html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'DIFEYRO_Manual_Clientes.html'; a.click();
+  showToast('📄 Manual generado y descargado', 'success');
+}
+
+function showToast(msg, type = '') {
+  const t = $('toast');
+  t.textContent = msg; t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.className = 'toast', 3200);
+}
+
+/* =====================================================================
+   EVENTOS (los datos viajan en data-*, nunca dentro de onclick)
+   ===================================================================== */
+$('clients-container').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const id = b.dataset.id;
+  if (b.dataset.act === 'ver') viewClient(id);
+  else if (b.dataset.act === 'editar') editClient(id);
+  else if (b.dataset.act === 'borrar') deleteClient(id);
+  else if (b.dataset.act === 'limpiar') clearSearch();
+});
+$('modal-body').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.hist) showHistory(b.dataset.hist);
+  else if (b.dataset.load !== undefined) { const h = histCache[Number(b.dataset.load)]; if (h) loadVersion(b.dataset.cid, h.snapshot); }
+  else if (b.dataset.restore) restoreClient(b.dataset.restore);
+});
+$('acc-table').addEventListener('change', e => {
+  const s = e.target.closest('select[data-email]'); if (!s || !isAdmin()) return;
+  const a = accessList.find(x => x.email === s.dataset.email); if (!a) return;
+  store.setAccess(a.email, s.value, a.nombre, me.email).then(() => showToast('✅ Permiso actualizado', 'success')).catch(err => { showToast('⚠ No se pudo cambiar: ' + (err.message || err.code), 'error'); renderAccess(); });
+});
+$('acc-table').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b || !isAdmin()) return;
+  if (!confirm('¿Quitar el acceso a ' + b.dataset.del + '?')) return;
+  store.removeAccess(b.dataset.del).then(() => showToast('Acceso retirado')).catch(err => showToast('⚠ No se pudo quitar: ' + (err.message || err.code), 'error'));
+});
+window.addEventListener('online', () => { if (!DEMO && dataStarted) setLive(true); });
+window.addEventListener('offline', () => { if (!DEMO && dataStarted) setLive(false); });
+
+/* =====================================================================
+   ARRANQUE
+   ===================================================================== */
+(async function boot() {
+  $('auth-ver').textContent = APP_VER; $('app-ver').textContent = APP_VER;
+  if (!EMAIL_LINK) $('auth-emailblock').hidden = true;
+  if (DOMINIO) {
+    $('auth-email').placeholder = $('auth-confirm-email').placeholder = 'tunombre@' + DOMINIO;
+    $('acc-emails').placeholder = 'nombre.apellido\notra.persona@' + DOMINIO;
+    $('dom-hint').textContent = ' Puedes escribir solo el usuario (por ejemplo juan.perez) y se completa con @' + DOMINIO + '.';
+    $('auth-denied-tip').textContent = 'Si tienes una cuenta @' + DOMINIO + ', cierra sesión y entra con ella.';
+  }
+  if (DEMO) {
+    store = LocalStore();
+    me = Object.assign({ demo: true }, store.user());
+    const b = $('demo-banner'); b.textContent = DEMO_REASON; b.hidden = false;
+    enterApp(); return;
+  }
+  showAuth('check'); $('auth-check-text').textContent = 'Conectando…';
+  try { store = await FirebaseStore.create(FIREBASE_CONFIG); }
+  catch (e) { showAuth('login', 'No se pudo cargar Firebase. Revisa tu conexión y recarga la página.'); return; }
+  if (EMAIL_LINK && store.isLink()) {
+    let mail = ''; try { mail = localStorage.getItem(LS_MAIL) || ''; } catch (e) {}
+    if (mail) finishLinkWith(mail);
+    else { finishingLink = true; showAuth('confirm'); }   // otro dispositivo: pide confirmar el correo
+  }
+  store.onAuth(onUser);
+})();
+
+</script>
+</body>
+</html>
